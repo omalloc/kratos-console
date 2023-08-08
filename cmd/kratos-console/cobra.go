@@ -33,8 +33,7 @@ OS/Arch: %s/%s
 				GitHash,
 				kratos.Release,
 				runtime.Version(),
-				runtime.GOOS,
-				runtime.GOARCH)
+				runtime.GOOS, runtime.GOARCH)
 			os.Exit(0)
 		},
 	}

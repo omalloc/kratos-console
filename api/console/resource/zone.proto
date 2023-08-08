@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package api.console.resource;
+
+option go_package = "github.com/omalloc/kratos-console/api/console/resource;resource";
+option java_multiple_files = true;
+option java_package = "api.console.resource";
+
+// 可用区
+message Zone {
+  // 可用区ID
+  int32 id = 1;
+  // 可用区名称
+  string name = 2;
+  // 可用区代码
+  string code = 3;
+  // 地区名称
+  string region_name = 4;
+  // 地区代码
+  string region_code = 5;
+  // 环境
+  string env = 6;
+  // 创建时间
+  string created_at = 7;
+  // 更新时间
+  string updated_at = 8;
+}
+
+message GetZoneListRequest {
+  // 页码
+  int32 current = 1;
+  // 每页数量
+  int32 page_size = 2;
+  // 排序字段
+  string order_by = 3;
+  // 排序方式
+  string order = 4;
+}
+
+message GetZoneListReply {
+  // 可用区列表
+  repeated Zone data = 1;
+  // 总数
+  int32 total = 2;
+}
+
+message GetZoneRequest {
+  // 可用区ID
+  int32 id = 1;
+}
+
+message GetZoneReply {
+  // 可用区
+  Zone data = 1;
+}
+
+message CreateZoneRequest {
+  // 可用区名称
+  string name = 1;
+  // 可用区代码
+  string code = 2;
+  // 地区名称
+  string region_name = 3;
+  // 地区代码
+  string region_code = 4;
+}
+
+message CreateZoneReply {
+  // 可用区
+  Zone data = 1;
+}
+
+message UpdateZoneRequest {
+ int32 id = 1;
+ // 可用区名称
+ string name = 2;
+ // 可用区代码
+ string code = 3;
+ // 地区名称
+ string region_name = 4;
+ // 地区代码
+ string region_code = 5;
+}
+
+message UpdateZoneReply {
+}
+
+message DisableZoneRequest {
+  // 可用区ID
+  int32 id = 1;
+  // 备注
+  string remark = 2;
+}
+
+message DisableZoneReply {
+}
+
+message DeleteZoneRequest {
+  int32 id = 1;
+}
+
+message DeleteZoneReply {
+}

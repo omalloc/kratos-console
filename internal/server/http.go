@@ -1,20 +1,22 @@
 package server
 
 import (
-	v1 "github.com/omalloc/kratos-console/api/helloworld/v1"
-	"github.com/omalloc/kratos-console/internal/conf"
-	"github.com/omalloc/kratos-console/internal/service"
-
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
+
+	pb "github.com/omalloc/kratos-console/api/console"
+	"github.com/omalloc/kratos-console/internal/conf"
+	"github.com/omalloc/kratos-console/internal/service"
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, console *service.ConsoleService, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
+			logging.Server(logger),
 		),
 	}
 	if c.Http.Network != "" {
@@ -27,6 +29,6 @@ func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterGreeterHTTPServer(srv, greeter)
+	pb.RegisterConsoleHTTPServer(srv, console)
 	return srv
 }

@@ -23,13 +23,13 @@ var (
 	// To render a whole-file example, we need a package-level declaration.
 	_ = ""
 	// Name is the name of the compiled software.
-	Name string
+	Name string = "kratos-console"
 	// Version is the version of the compiled software.
-	Version string
+	Version string = "v0.0.0"
 	// GitHash is the git-hash of the compiled software.
-	GitHash string
+	GitHash string = "-"
 	// Built is build-time the compiled software.
-	Built string
+	Built string = "0"
 	// flagconf is the config flag.
 	flagconf    string
 	flagverbose bool

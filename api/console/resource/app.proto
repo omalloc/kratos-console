@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package api.console.resource;
+
+option go_package = "github.com/omalloc/kratos-console/api/console/resource;resource";
+option java_multiple_files = true;
+option java_package = "api.console.resource";

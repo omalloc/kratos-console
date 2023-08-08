@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package api.console;
+
+option go_package = "github.com/omalloc/kratos-console/api/console;console";
+option java_multiple_files = true;
+option java_package = "api.console";
+
+import "google/api/annotations.proto";
+import "console/resource/zone.proto";
+
+service Console {
+	// GetZoneList returns a list of zones.
+	// 
+	// The list is sorted by zone id.
+	rpc GetZoneList (resource.GetZoneListRequest) returns (resource.GetZoneListReply) {
+		option (google.api.http) = {
+			get: "/api/console/zone"
+		};
+	}
+	
+	rpc GetZone (resource.GetZoneRequest) returns (resource.GetZoneReply) {
+		option (google.api.http) = {
+			get: "/api/console/zone/{id}"
+		};
+	}
+
+	rpc CreateZone (resource.CreateZoneRequest) returns (resource.CreateZoneReply) {
+		option (google.api.http) = {
+			post: "/api/console/zone"
+			body: "*"
+		};
+	}
+
+	rpc UpdateZone (resource.UpdateZoneRequest) returns (resource.UpdateZoneReply) {
+		option (google.api.http) = {
+			put: "/api/console/zone/{id}"
+			body: "*"
+		};
+	}
+
+	rpc DisableZone (resource.DisableZoneRequest) returns (resource.DisableZoneReply) {
+		option (google.api.http) = {
+			post: "/api/console/zone/{id}/disable",
+			body: "*"
+		};
+	}
+
+	rpc DeleteZone (resource.DeleteZoneRequest) returns (resource.DeleteZoneReply) {
+		option (google.api.http) = {
+			delete: "/api/console/zone/{id}"
+		};
+	}
+}
