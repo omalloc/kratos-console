@@ -2,10 +2,12 @@ package biz
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/log"
-	pb "github.com/omalloc/kratos-console/api/console/resource"
-	"gorm.io/gorm"
 	"time"
+
+	"github.com/go-kratos/kratos/v2/log"
+	"gorm.io/gorm"
+
+	pb "github.com/omalloc/kratos-console/api/console/resource"
 )
 
 type EnvType string
@@ -53,6 +55,10 @@ func NewZoneUsecase(repo ZoneRepo, logger log.Logger) *ZoneUsecase {
 
 func (uc *ZoneUsecase) GetZoneList(ctx context.Context, q *QueryPager) ([]*Zone, int64, error) {
 	return uc.repo.GetZoneList(ctx)
+}
+
+func (uc *ZoneUsecase) GetZone(ctx context.Context, ID int64) (*Zone, error) {
+	return uc.repo.GetZoneByID(ctx, ID)
 }
 
 func (uc *ZoneUsecase) CreateZone(ctx context.Context, info *pb.CreateZoneRequest) (*Zone, error) {

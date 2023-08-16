@@ -2,11 +2,14 @@ package service
 
 import (
 	"context"
+	"time"
+
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/samber/lo"
+
 	pb "github.com/omalloc/kratos-console/api/console/resource"
 	"github.com/omalloc/kratos-console/internal/biz"
-	"github.com/samber/lo"
-	"time"
 )
 
 type ZoneService struct {
@@ -17,7 +20,6 @@ type ZoneService struct {
 }
 
 func NewZoneService(logger log.Logger, zone *biz.ZoneUsecase) *ZoneService {
-
 	return &ZoneService{
 		log:  log.NewHelper(logger),
 		zone: zone,
@@ -52,7 +54,22 @@ func (s *ZoneService) GetZoneList(ctx context.Context, req *pb.GetZoneListReques
 }
 
 func (s *ZoneService) GetZone(ctx context.Context, req *pb.GetZoneRequest) (*pb.GetZoneReply, error) {
-	return &pb.GetZoneReply{}, nil
+	zone, err := s.zone.GetZone(ctx, int64(req.Id))
+	if err != nil {
+		return nil, errors.NotFound("ZONE_NOT_FOUND", "Zone Not Found")
+	}
+	return &pb.GetZoneReply{
+		Data: &pb.ZoneInfo{
+			Id:         int32(zone.ID),
+			Name:       zone.Name,
+			Code:       zone.Code,
+			RegionName: zone.RegionName,
+			RegionCode: zone.RegionCode,
+			Env:        zone.Env,
+			CreatedAt:  zone.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:  zone.UpdatedAt.Format(time.RFC3339),
+		},
+	}, nil
 }
 
 func (s *ZoneService) CreateZone(ctx context.Context, req *pb.CreateZoneRequest) (*pb.CreateZoneReply, error) {
