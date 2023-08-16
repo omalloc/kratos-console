@@ -6,13 +6,18 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
 
-	pb "github.com/omalloc/kratos-console/api/console"
+	resourcepb "github.com/omalloc/kratos-console/api/console/resource"
 	"github.com/omalloc/kratos-console/internal/conf"
 	"github.com/omalloc/kratos-console/internal/service"
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, console *service.ConsoleService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server,
+	logger log.Logger,
+	// append service in there.
+	console *service.ConsoleService,
+	zoneService *service.ZoneService,
+) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -29,6 +34,6 @@ func NewHTTPServer(c *conf.Server, console *service.ConsoleService, logger log.L
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	pb.RegisterConsoleHTTPServer(srv, console)
+	resourcepb.RegisterZoneHTTPServer(srv, zoneService)
 	return srv
 }

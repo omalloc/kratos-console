@@ -7,11 +7,7 @@
 package console
 
 import (
-	context "context"
-	resource "github.com/omalloc/kratos-console/api/console/resource"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,28 +15,12 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-const (
-	Console_GetZoneList_FullMethodName = "/api.console.Console/GetZoneList"
-	Console_GetZone_FullMethodName     = "/api.console.Console/GetZone"
-	Console_CreateZone_FullMethodName  = "/api.console.Console/CreateZone"
-	Console_UpdateZone_FullMethodName  = "/api.console.Console/UpdateZone"
-	Console_DisableZone_FullMethodName = "/api.console.Console/DisableZone"
-	Console_DeleteZone_FullMethodName  = "/api.console.Console/DeleteZone"
-)
+const ()
 
 // ConsoleClient is the client API for Console service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConsoleClient interface {
-	// GetZoneList returns a list of zones.
-	//
-	// The list is sorted by zone id.
-	GetZoneList(ctx context.Context, in *resource.GetZoneListRequest, opts ...grpc.CallOption) (*resource.GetZoneListReply, error)
-	GetZone(ctx context.Context, in *resource.GetZoneRequest, opts ...grpc.CallOption) (*resource.GetZoneReply, error)
-	CreateZone(ctx context.Context, in *resource.CreateZoneRequest, opts ...grpc.CallOption) (*resource.CreateZoneReply, error)
-	UpdateZone(ctx context.Context, in *resource.UpdateZoneRequest, opts ...grpc.CallOption) (*resource.UpdateZoneReply, error)
-	DisableZone(ctx context.Context, in *resource.DisableZoneRequest, opts ...grpc.CallOption) (*resource.DisableZoneReply, error)
-	DeleteZone(ctx context.Context, in *resource.DeleteZoneRequest, opts ...grpc.CallOption) (*resource.DeleteZoneReply, error)
 }
 
 type consoleClient struct {
@@ -51,73 +31,10 @@ func NewConsoleClient(cc grpc.ClientConnInterface) ConsoleClient {
 	return &consoleClient{cc}
 }
 
-func (c *consoleClient) GetZoneList(ctx context.Context, in *resource.GetZoneListRequest, opts ...grpc.CallOption) (*resource.GetZoneListReply, error) {
-	out := new(resource.GetZoneListReply)
-	err := c.cc.Invoke(ctx, Console_GetZoneList_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *consoleClient) GetZone(ctx context.Context, in *resource.GetZoneRequest, opts ...grpc.CallOption) (*resource.GetZoneReply, error) {
-	out := new(resource.GetZoneReply)
-	err := c.cc.Invoke(ctx, Console_GetZone_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *consoleClient) CreateZone(ctx context.Context, in *resource.CreateZoneRequest, opts ...grpc.CallOption) (*resource.CreateZoneReply, error) {
-	out := new(resource.CreateZoneReply)
-	err := c.cc.Invoke(ctx, Console_CreateZone_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *consoleClient) UpdateZone(ctx context.Context, in *resource.UpdateZoneRequest, opts ...grpc.CallOption) (*resource.UpdateZoneReply, error) {
-	out := new(resource.UpdateZoneReply)
-	err := c.cc.Invoke(ctx, Console_UpdateZone_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *consoleClient) DisableZone(ctx context.Context, in *resource.DisableZoneRequest, opts ...grpc.CallOption) (*resource.DisableZoneReply, error) {
-	out := new(resource.DisableZoneReply)
-	err := c.cc.Invoke(ctx, Console_DisableZone_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *consoleClient) DeleteZone(ctx context.Context, in *resource.DeleteZoneRequest, opts ...grpc.CallOption) (*resource.DeleteZoneReply, error) {
-	out := new(resource.DeleteZoneReply)
-	err := c.cc.Invoke(ctx, Console_DeleteZone_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ConsoleServer is the server API for Console service.
 // All implementations must embed UnimplementedConsoleServer
 // for forward compatibility
 type ConsoleServer interface {
-	// GetZoneList returns a list of zones.
-	//
-	// The list is sorted by zone id.
-	GetZoneList(context.Context, *resource.GetZoneListRequest) (*resource.GetZoneListReply, error)
-	GetZone(context.Context, *resource.GetZoneRequest) (*resource.GetZoneReply, error)
-	CreateZone(context.Context, *resource.CreateZoneRequest) (*resource.CreateZoneReply, error)
-	UpdateZone(context.Context, *resource.UpdateZoneRequest) (*resource.UpdateZoneReply, error)
-	DisableZone(context.Context, *resource.DisableZoneRequest) (*resource.DisableZoneReply, error)
-	DeleteZone(context.Context, *resource.DeleteZoneRequest) (*resource.DeleteZoneReply, error)
 	mustEmbedUnimplementedConsoleServer()
 }
 
@@ -125,24 +42,6 @@ type ConsoleServer interface {
 type UnimplementedConsoleServer struct {
 }
 
-func (UnimplementedConsoleServer) GetZoneList(context.Context, *resource.GetZoneListRequest) (*resource.GetZoneListReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetZoneList not implemented")
-}
-func (UnimplementedConsoleServer) GetZone(context.Context, *resource.GetZoneRequest) (*resource.GetZoneReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetZone not implemented")
-}
-func (UnimplementedConsoleServer) CreateZone(context.Context, *resource.CreateZoneRequest) (*resource.CreateZoneReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateZone not implemented")
-}
-func (UnimplementedConsoleServer) UpdateZone(context.Context, *resource.UpdateZoneRequest) (*resource.UpdateZoneReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateZone not implemented")
-}
-func (UnimplementedConsoleServer) DisableZone(context.Context, *resource.DisableZoneRequest) (*resource.DisableZoneReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DisableZone not implemented")
-}
-func (UnimplementedConsoleServer) DeleteZone(context.Context, *resource.DeleteZoneRequest) (*resource.DeleteZoneReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteZone not implemented")
-}
 func (UnimplementedConsoleServer) mustEmbedUnimplementedConsoleServer() {}
 
 // UnsafeConsoleServer may be embedded to opt out of forward compatibility for this service.
@@ -156,146 +55,13 @@ func RegisterConsoleServer(s grpc.ServiceRegistrar, srv ConsoleServer) {
 	s.RegisterService(&Console_ServiceDesc, srv)
 }
 
-func _Console_GetZoneList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(resource.GetZoneListRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConsoleServer).GetZoneList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Console_GetZoneList_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConsoleServer).GetZoneList(ctx, req.(*resource.GetZoneListRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Console_GetZone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(resource.GetZoneRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConsoleServer).GetZone(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Console_GetZone_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConsoleServer).GetZone(ctx, req.(*resource.GetZoneRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Console_CreateZone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(resource.CreateZoneRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConsoleServer).CreateZone(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Console_CreateZone_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConsoleServer).CreateZone(ctx, req.(*resource.CreateZoneRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Console_UpdateZone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(resource.UpdateZoneRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConsoleServer).UpdateZone(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Console_UpdateZone_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConsoleServer).UpdateZone(ctx, req.(*resource.UpdateZoneRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Console_DisableZone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(resource.DisableZoneRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConsoleServer).DisableZone(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Console_DisableZone_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConsoleServer).DisableZone(ctx, req.(*resource.DisableZoneRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Console_DeleteZone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(resource.DeleteZoneRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConsoleServer).DeleteZone(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Console_DeleteZone_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConsoleServer).DeleteZone(ctx, req.(*resource.DeleteZoneRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Console_ServiceDesc is the grpc.ServiceDesc for Console service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Console_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.console.Console",
 	HandlerType: (*ConsoleServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetZoneList",
-			Handler:    _Console_GetZoneList_Handler,
-		},
-		{
-			MethodName: "GetZone",
-			Handler:    _Console_GetZone_Handler,
-		},
-		{
-			MethodName: "CreateZone",
-			Handler:    _Console_CreateZone_Handler,
-		},
-		{
-			MethodName: "UpdateZone",
-			Handler:    _Console_UpdateZone_Handler,
-		},
-		{
-			MethodName: "DisableZone",
-			Handler:    _Console_DisableZone_Handler,
-		},
-		{
-			MethodName: "DeleteZone",
-			Handler:    _Console_DeleteZone_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "console/console.proto",
+	Methods:     []grpc.MethodDesc{},
+	Streams:     []grpc.StreamDesc{},
+	Metadata:    "console/console.proto",
 }

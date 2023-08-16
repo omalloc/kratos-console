@@ -55,6 +55,7 @@ api:
 		--openapiv2_out=./api/docs \
 		--openapiv2_opt=logtostderr=true \
 		--openapiv2_opt=json_names_for_fields=false \
+		--openapiv2_opt=output_format=json \
 		--openapi_out=fq_schema_naming=true,naming=proto,default_response=false:. \
 		$(API_PROTO_FILES)
 

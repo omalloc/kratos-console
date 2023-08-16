@@ -3,15 +3,22 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: Zone API
+    description: |-
+        ZoneService is the resource `data-center` definition.
+
+         version: v1
     version: 0.0.1
 paths:
     /api/console/zone:
         get:
             tags:
-                - Console
-            description: "GetZoneList returns a list of zones.\n \n The list is sorted by zone id."
-            operationId: Console_GetZoneList
+                - Zone
+            description: |-
+                GetZoneList returns a list of zones.
+
+                 The list is sorted by zone id.
+            operationId: Zone_GetZoneList
             parameters:
                 - name: current
                   in: query
@@ -25,16 +32,6 @@ paths:
                   schema:
                     type: integer
                     format: int32
-                - name: order_by
-                  in: query
-                  description: 排序字段
-                  schema:
-                    type: string
-                - name: order
-                  in: query
-                  description: 排序方式
-                  schema:
-                    type: string
             responses:
                 "200":
                     description: OK
@@ -44,8 +41,12 @@ paths:
                                 $ref: '#/components/schemas/api.console.resource.GetZoneListReply'
         post:
             tags:
-                - Console
-            operationId: Console_CreateZone
+                - Zone
+            description: |-
+                CreateZone creates a new zone.
+
+                 ...
+            operationId: Zone_CreateZone
             requestBody:
                 content:
                     application/json:
@@ -62,8 +63,13 @@ paths:
     /api/console/zone/{id}:
         get:
             tags:
-                - Console
-            operationId: Console_GetZone
+                - Zone
+            description: |-
+                GetZone returns the zone.
+
+                 Query parameter "id" is required.
+                 Example: /api/console/zone/1
+            operationId: Zone_GetZone
             parameters:
                 - name: id
                   in: path
@@ -81,8 +87,12 @@ paths:
                                 $ref: '#/components/schemas/api.console.resource.GetZoneReply'
         put:
             tags:
-                - Console
-            operationId: Console_UpdateZone
+                - Zone
+            description: |-
+                UpdateZone updates the zone.
+
+                 ...
+            operationId: Zone_UpdateZone
             parameters:
                 - name: id
                   in: path
@@ -105,8 +115,12 @@ paths:
                                 $ref: '#/components/schemas/api.console.resource.UpdateZoneReply'
         delete:
             tags:
-                - Console
-            operationId: Console_DeleteZone
+                - Zone
+            description: |-
+                DeleteZone deletes the zone.
+
+                 ...
+            operationId: Zone_DeleteZone
             parameters:
                 - name: id
                   in: path
@@ -124,8 +138,12 @@ paths:
     /api/console/zone/{id}/disable:
         post:
             tags:
-                - Console
-            operationId: Console_DisableZone
+                - Zone
+            description: |-
+                DisableZone disables the zone.
+
+                 ...
+            operationId: Zone_DisableZone
             parameters:
                 - name: id
                   in: path
@@ -147,32 +165,13 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.console.resource.DisableZoneReply'
-    /helloworld/{name}:
-        get:
-            tags:
-                - Greeter
-            description: Sends a greeting
-            operationId: Greeter_SayHello
-            parameters:
-                - name: name
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
 components:
     schemas:
         api.console.resource.CreateZoneReply:
             type: object
             properties:
                 data:
-                    $ref: '#/components/schemas/api.console.resource.Zone'
+                    $ref: '#/components/schemas/api.console.resource.ZoneInfo'
         api.console.resource.CreateZoneRequest:
             type: object
             properties:
@@ -188,6 +187,9 @@ components:
                 region_code:
                     type: string
                     description: 地区代码
+                env:
+                    type: string
+                    description: 环境
         api.console.resource.DeleteZoneReply:
             type: object
             properties: {}
@@ -210,7 +212,7 @@ components:
                 data:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.console.resource.Zone'
+                        $ref: '#/components/schemas/api.console.resource.ZoneInfo'
                     description: 可用区列表
                 total:
                     type: integer
@@ -220,7 +222,7 @@ components:
             type: object
             properties:
                 data:
-                    $ref: '#/components/schemas/api.console.resource.Zone'
+                    $ref: '#/components/schemas/api.console.resource.ZoneInfo'
         api.console.resource.UpdateZoneReply:
             type: object
             properties: {}
@@ -242,7 +244,7 @@ components:
                 region_code:
                     type: string
                     description: 地区代码
-        api.console.resource.Zone:
+        api.console.resource.ZoneInfo:
             type: object
             properties:
                 id:
@@ -271,13 +273,5 @@ components:
                     type: string
                     description: 更新时间
             description: 可用区
-        helloworld.v1.HelloReply:
-            type: object
-            properties:
-                message:
-                    type: string
-            description: The response message containing the greetings
 tags:
-    - name: Console
-    - name: Greeter
-      description: The greeting service definition.
+    - name: Zone

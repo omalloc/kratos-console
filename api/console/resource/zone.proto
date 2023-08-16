@@ -6,8 +6,74 @@ option go_package = "github.com/omalloc/kratos-console/api/console/resource;reso
 option java_multiple_files = true;
 option java_package = "api.console.resource";
 
+import "google/api/annotations.proto";
+
+
+// ZoneService is the resource `data-center` definition.
+//
+// version: v1
+service Zone {
+  // GetZoneList returns a list of zones.
+  //
+  // The list is sorted by zone id.
+  rpc GetZoneList (resource.GetZoneListRequest) returns (resource.GetZoneListReply) {
+    option (google.api.http) = {
+      get: "/api/console/zone"
+    };
+  }
+
+  // GetZone returns the zone.
+  //
+  // Query parameter "id" is required.
+  // Example: /api/console/zone/1
+  rpc GetZone (resource.GetZoneRequest) returns (resource.GetZoneReply) {
+    option (google.api.http) = {
+      get: "/api/console/zone/{id}"
+    };
+  }
+
+  // CreateZone creates a new zone.
+  //
+  // ...
+  rpc CreateZone (resource.CreateZoneRequest) returns (resource.CreateZoneReply) {
+    option (google.api.http) = {
+      post: "/api/console/zone"
+      body: "*"
+    };
+  }
+
+  // UpdateZone updates the zone.
+  //
+  // ...
+  rpc UpdateZone (resource.UpdateZoneRequest) returns (resource.UpdateZoneReply) {
+    option (google.api.http) = {
+      put: "/api/console/zone/{id}"
+      body: "*"
+    };
+  }
+
+  // DisableZone disables the zone.
+  //
+  // ...
+  rpc DisableZone (resource.DisableZoneRequest) returns (resource.DisableZoneReply) {
+    option (google.api.http) = {
+      post: "/api/console/zone/{id}/disable",
+      body: "*"
+    };
+  }
+
+  // DeleteZone deletes the zone.
+  //
+  // ...
+  rpc DeleteZone (resource.DeleteZoneRequest) returns (resource.DeleteZoneReply) {
+    option (google.api.http) = {
+      delete: "/api/console/zone/{id}"
+    };
+  }
+}
+
 // 可用区
-message Zone {
+message ZoneInfo {
   // 可用区ID
   int32 id = 1;
   // 可用区名称
@@ -26,20 +92,28 @@ message Zone {
   string updated_at = 8;
 }
 
+// 排序
+message OrderBy {
+  // 排序字段
+  string field = 1;
+  // 排序方式 asc: 升序 desc: 降序
+  string order = 2;
+}
+
 message GetZoneListRequest {
   // 页码
   int32 current = 1;
   // 每页数量
   int32 page_size = 2;
   // 排序字段
-  string order_by = 3;
-  // 排序方式
-  string order = 4;
+  repeated OrderBy order_by = 3;
+
+
 }
 
 message GetZoneListReply {
   // 可用区列表
-  repeated Zone data = 1;
+  repeated ZoneInfo data = 1;
   // 总数
   int32 total = 2;
 }
@@ -51,7 +125,7 @@ message GetZoneRequest {
 
 message GetZoneReply {
   // 可用区
-  Zone data = 1;
+  ZoneInfo data = 1;
 }
 
 message CreateZoneRequest {
@@ -63,11 +137,13 @@ message CreateZoneRequest {
   string region_name = 3;
   // 地区代码
   string region_code = 4;
+  // 环境
+  string env = 5;
 }
 
 message CreateZoneReply {
   // 可用区
-  Zone data = 1;
+  ZoneInfo data = 1;
 }
 
 message UpdateZoneRequest {

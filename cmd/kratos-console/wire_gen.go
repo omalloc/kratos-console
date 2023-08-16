@@ -35,9 +35,10 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 	}
 	zoneRepo := data.NewZoneRepo(dataData)
 	zoneUsecase := biz.NewZoneUsecase(zoneRepo, logger)
-	consoleService := service.NewConsoleService(zoneUsecase, logger)
-	grpcServer := server.NewGRPCServer(confServer, consoleService, logger)
-	httpServer := server.NewHTTPServer(confServer, consoleService, logger)
+	zoneService := service.NewZoneService(logger, zoneUsecase)
+	grpcServer := server.NewGRPCServer(confServer, logger, zoneService)
+	consoleService := service.NewConsoleService(logger)
+	httpServer := server.NewHTTPServer(confServer, logger, consoleService, zoneService)
 	v := server.NewChecker(dataData)
 	healthServer := health.NewServer(v, logger, httpServer)
 	app := newApp(logger, registrar, grpcServer, httpServer, healthServer)

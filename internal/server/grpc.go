@@ -5,14 +5,15 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-
-	pb "github.com/omalloc/kratos-console/api/console"
+	resourcepb "github.com/omalloc/kratos-console/api/console/resource"
 	"github.com/omalloc/kratos-console/internal/conf"
 	"github.com/omalloc/kratos-console/internal/service"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, console *service.ConsoleService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, logger log.Logger,
+	zone *service.ZoneService,
+) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -29,6 +30,6 @@ func NewGRPCServer(c *conf.Server, console *service.ConsoleService, logger log.L
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	pb.RegisterConsoleServer(srv, console)
+	resourcepb.RegisterZoneServer(srv, zone)
 	return srv
 }
