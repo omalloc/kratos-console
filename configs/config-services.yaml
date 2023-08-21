@@ -1,6 +1,6 @@
 registry:
-  enabled: false
-  only_discovery: true
+  enabled: true
+  only_discovery: false
   endpoints:
     - 127.0.0.1:2379
 tracing:

@@ -49,3 +49,31 @@ docker build -t <your-docker-image-name> .
 docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
 ```
 
+
+## Development
+
+### with vscode debug
+
+`.vscode/launch.json`
+
+```jsonc
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch App",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "cwd": "${workspaceRoot}",
+            "program": "${workspaceRoot}/cmd/kratos-console/.",
+            "args": [
+                "--conf", "./configs/"
+            ]
+        }
+    ]
+}
+```

@@ -12,6 +12,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/omalloc/contrib/kratos/health"
+	globalTrace "github.com/omalloc/contrib/kratos/tracing"
 	"github.com/omalloc/contrib/kratos/zap"
 	"go.uber.org/automaxprocs/maxprocs"
 
@@ -90,6 +91,11 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
+
+	globalTrace.InitTracer(
+		globalTrace.WithServiceName(Name), // service-name registered in jaeger-service
+		globalTrace.WithEndpoint(bc.Tracing.GetEndpoint()),
+	)
 
 	app, cleanup, err := wireApp(&bc, bc.Server, bc.Data, logger)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
 
 	resourcepb "github.com/omalloc/kratos-console/api/console/resource"
@@ -23,6 +24,7 @@ func NewHTTPServer(c *conf.Server,
 		http.Middleware(
 			recovery.Recovery(),
 			metadata.Server(),
+			tracing.Server(),
 			logging.Server(logger),
 		),
 	}

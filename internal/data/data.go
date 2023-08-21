@@ -2,15 +2,15 @@ package data
 
 import (
 	"context"
-	"github.com/omalloc/contrib/kratos/orm"
-	"github.com/omalloc/kratos-console/internal/biz"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
+	"github.com/omalloc/contrib/kratos/orm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
+	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/omalloc/kratos-console/internal/conf"
 )
 
@@ -41,7 +41,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		orm.WithLogger(
 			orm.WithDebug(),
 			orm.WIthSlowThreshold(time.Second*2),
-			orm.WithSkipCallerLookup(true),
+			orm.WithSkipCallerLookup(false),
 			orm.WithSkipErrRecordNotFound(true),
 			orm.WithLogHelper(logFilter),
 		),
@@ -51,7 +51,8 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		return nil, emptyCallback, err
 	}
 
-	_ = db.AutoMigrate(&biz.Zone{})
+	_ = db.Session(&gorm.Session{SkipHooks: true}).
+		AutoMigrate(&biz.Zone{})
 
 	cleanup := func() {
 		dbLog.Info("closing the data resources")
@@ -63,7 +64,10 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 }
 
 func (d *Data) Check(ctx context.Context) error {
-	if c, err := d.db.DB(); err == nil {
+	// check database connection
+	// but skip gorm hooks (tracing and more...)
+	tx := d.db.Session(&gorm.Session{SkipHooks: true})
+	if c, err := tx.DB(); err == nil {
 		return c.PingContext(ctx)
 	}
 	return nil

@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/go-kratos/kratos/v2 v2.6.2
 	github.com/google/wire v0.5.0
-	github.com/omalloc/contrib v1.0.0
+	github.com/omalloc/contrib v1.0.2
 	github.com/samber/lo v1.38.1
 	github.com/spf13/cobra v1.7.0
 	go.uber.org/automaxprocs v1.5.1
@@ -13,7 +13,7 @@ require (
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.30.0
 	gorm.io/driver/mysql v1.5.1
-	gorm.io/gorm v1.25.2
+	gorm.io/gorm v1.25.4
 )
 
 require (
@@ -42,7 +42,9 @@ require (
 	go.etcd.io/etcd/client/v3 v3.5.9 // indirect
 	go.opentelemetry.io/contrib v1.17.0 // indirect
 	go.opentelemetry.io/otel v1.16.0 // indirect
+	go.opentelemetry.io/otel/exporters/jaeger v1.16.0 // indirect
 	go.opentelemetry.io/otel/metric v1.16.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.16.0 // indirect
 	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/dig v1.17.0 // indirect
@@ -52,7 +54,7 @@ require (
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
-	golang.org/x/sys v0.8.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
