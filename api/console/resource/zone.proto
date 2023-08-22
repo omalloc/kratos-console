@@ -107,8 +107,6 @@ message GetZoneListRequest {
   int32 page_size = 2;
   // 排序字段
   repeated OrderBy order_by = 3;
-
-
 }
 
 message GetZoneListReply {

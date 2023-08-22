@@ -16,6 +16,8 @@ import (
 // NewGRPCServer new a gRPC server.
 func NewGRPCServer(c *conf.Server, logger log.Logger,
 	zone *service.ZoneService,
+	node *service.NodeService,
+	app *service.AppService,
 ) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
@@ -36,5 +38,7 @@ func NewGRPCServer(c *conf.Server, logger log.Logger,
 	}
 	srv := grpc.NewServer(opts...)
 	resourcepb.RegisterZoneServer(srv, zone)
+	resourcepb.RegisterNodeServer(srv, node)
+	resourcepb.RegisterAppServer(srv, app)
 	return srv
 }

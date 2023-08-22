@@ -95,5 +95,9 @@ func (s *ZoneService) DisableZone(ctx context.Context, req *pb.DisableZoneReques
 }
 
 func (s *ZoneService) DeleteZone(ctx context.Context, req *pb.DeleteZoneRequest) (*pb.DeleteZoneReply, error) {
+	err := s.zone.DeleteZone(ctx, int64(req.Id))
+	if err != nil {
+		return nil, err
+	}
 	return &pb.DeleteZoneReply{}, nil
 }

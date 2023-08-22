@@ -14,11 +14,11 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server,
-	logger log.Logger,
+func NewHTTPServer(c *conf.Server, logger log.Logger,
 	// append service in there.
-	console *service.ConsoleService,
-	zoneService *service.ZoneService,
+	zone *service.ZoneService,
+	node *service.NodeService,
+	app *service.AppService,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -38,6 +38,8 @@ func NewHTTPServer(c *conf.Server,
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	resourcepb.RegisterZoneHTTPServer(srv, zoneService)
+	resourcepb.RegisterZoneHTTPServer(srv, zone)
+	resourcepb.RegisterNodeHTTPServer(srv, node)
+	resourcepb.RegisterAppHTTPServer(srv, app)
 	return srv
 }

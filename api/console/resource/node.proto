@@ -5,3 +5,71 @@ package api.console.resource;
 option go_package = "github.com/omalloc/kratos-console/api/console/resource;resource";
 option java_multiple_files = true;
 option java_package = "api.console.resource";
+
+import "google/api/annotations.proto";
+
+// 节点服务
+//
+// 节点服务提供可用部署节点相关的接口
+service Node {
+    rpc List(NodeListRequest) returns (NodeListReply) {
+        option (google.api.http) = {
+            get: "/api/console/node"
+        };
+    }
+}
+
+enum AgentType {
+    // 未知
+    UNKNOWN = 0;
+    // 正常
+    NORMAL = 1;
+    // 异常
+    ABNORMAL = 2;
+}
+
+message Agent {
+    // 部署状态
+    AgentType type = 1;
+    // 上次心跳时间
+    int64 heartbeat_time = 2;
+    // Agent版本
+    string version = 3;
+}
+
+message NodeInfo {
+    // 节点ID
+    int32 id = 1;
+    // 节点名称
+    string name = 2;
+    // 节点IP
+    string ip = 3;
+    // Agent状态
+    Agent agent = 4;
+    // 节点创建时间
+    int64 created_at = 5;
+    // 节点更新时间
+    int64 updated_at = 6;
+    // 可用区ID
+    int64 zone_id = 7;
+    // 可用区编码
+    string zone_code = 8;
+    // 可用区名称
+    string zone_name = 9;
+    // 地区
+    string region_code = 10;
+    // 地区名称
+    string region_name = 11;
+}
+
+message NodeListRequest {
+    // 页码
+    int32 current = 1;
+    // 每页数量
+    int32 page_size = 2;
+}
+
+message NodeListReply {
+    repeated NodeInfo data = 1;
+    int64 total = 2;
+}

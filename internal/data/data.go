@@ -18,6 +18,8 @@ import (
 var ProviderSet = wire.NewSet(
 	NewData,
 	NewZoneRepo,
+	NewNodeRepo,
+	NewAppRepo,
 )
 
 var (
@@ -37,7 +39,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 
 	db, err := orm.New(
 		orm.WithDriver(mysql.Open(c.Database.Source)),
-		orm.WithTracing(),
+		orm.WithTracingOpts(orm.WithDatabaseName("kratos_cp")),
 		orm.WithLogger(
 			orm.WithDebug(),
 			orm.WIthSlowThreshold(time.Second*2),
@@ -52,7 +54,10 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 	}
 
 	_ = db.Session(&gorm.Session{SkipHooks: true}).
-		AutoMigrate(&biz.Zone{})
+		AutoMigrate(
+			&biz.Zone{},
+			&biz.Node{},
+		)
 
 	cleanup := func() {
 		dbLog.Info("closing the data resources")

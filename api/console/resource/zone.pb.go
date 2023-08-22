@@ -133,6 +133,7 @@ func (x *ZoneInfo) GetUpdatedAt() string {
 	return ""
 }
 
+// 排序
 type OrderBy struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -140,7 +141,7 @@ type OrderBy struct {
 
 	// 排序字段
 	Field string `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
-	// 排序方式
+	// 排序方式 asc: 升序 desc: 降序
 	Order string `protobuf:"bytes,2,opt,name=order,proto3" json:"order,omitempty"`
 }
 

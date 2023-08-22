@@ -90,6 +90,11 @@ generate:
 	go get github.com/google/wire/cmd/wire@latest
 	go generate ./...
 
+.PHONY: wire
+# wire generate wire file.
+wire:
+	@wire ./...
+
 .PHONY: all
 # generate all
 all:

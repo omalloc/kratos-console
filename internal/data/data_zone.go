@@ -9,7 +9,7 @@ type zoneRepo struct {
 	data *Data
 }
 
-func (r *zoneRepo) GetZoneList(ctx context.Context) ([]*biz.Zone, int64, error) {
+func (r *zoneRepo) GetZoneList(ctx context.Context, query *biz.QueryPager) ([]*biz.Zone, int64, error) {
 	var (
 		count int64
 		zones []*biz.Zone
@@ -18,6 +18,8 @@ func (r *zoneRepo) GetZoneList(ctx context.Context) ([]*biz.Zone, int64, error) 
 	err := r.data.db.WithContext(ctx).
 		Model(&biz.Zone{}).
 		Count(&count).
+		Offset(int((query.Current - 1) * query.PageSize)).
+		Limit(int(query.PageSize)).
 		Find(&zones).Error
 	return zones, count, err
 }
