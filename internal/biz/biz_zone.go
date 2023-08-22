@@ -71,6 +71,18 @@ func (uc *ZoneUsecase) CreateZone(ctx context.Context, info *pb.CreateZoneReques
 	return zone, nil
 }
 
+func (uc *ZoneUsecase) UpdateZone(ctx context.Context, req *pb.UpdateZoneRequest) error {
+	zone := &Zone{
+		ID:         int64(req.Id),
+		Name:       req.Name,
+		Code:       req.Code,
+		RegionName: req.RegionName,
+		RegionCode: req.RegionCode,
+		Env:        req.Env,
+	}
+	return uc.repo.UpdateZone(ctx, zone)
+}
+
 func (uc *ZoneUsecase) DeleteZone(ctx context.Context, ID int64) error {
 	return uc.repo.DeleteZone(ctx, ID)
 }

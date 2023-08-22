@@ -87,7 +87,10 @@ func (s *ZoneService) CreateZone(ctx context.Context, req *pb.CreateZoneRequest)
 }
 
 func (s *ZoneService) UpdateZone(ctx context.Context, req *pb.UpdateZoneRequest) (*pb.UpdateZoneReply, error) {
-	return &pb.UpdateZoneReply{}, nil
+	if err := s.zone.UpdateZone(ctx, req); err != nil {
+		return nil, err
+	}
+	return nil, nil
 }
 
 func (s *ZoneService) DisableZone(ctx context.Context, req *pb.DisableZoneRequest) (*pb.DisableZoneReply, error) {

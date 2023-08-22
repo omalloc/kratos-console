@@ -39,7 +39,7 @@ var (
 )
 
 func init() {
-	maxprocs.Set(maxprocs.Logger(nil))
+	_, _ = maxprocs.Set(maxprocs.Logger(nil))
 
 	rootCmd.PersistentFlags().StringVar(&flagconf, "conf", "../../configs", "config path")
 	rootCmd.PersistentFlags().BoolVarP(&flagverbose, "verbose", "v", false, "verbose output")
@@ -64,7 +64,10 @@ func newApp(logger log.Logger, registrar registry.Registrar, gs *grpc.Server, hs
 }
 
 func main() {
-	rootCmd.Execute()
+	if err := rootCmd.Execute(); err != nil {
+		panic(err)
+	}
+
 	logger := log.With(zap.NewLogger(zap.Verbose(flagverbose)),
 		"ts", log.DefaultTimestamp,
 		// "caller", log.DefaultCaller,

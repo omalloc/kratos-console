@@ -16,7 +16,7 @@ service Zone {
   // GetZoneList returns a list of zones.
   //
   // The list is sorted by zone id.
-  rpc GetZoneList (resource.GetZoneListRequest) returns (resource.GetZoneListReply) {
+  rpc GetZoneList (GetZoneListRequest) returns (GetZoneListReply) {
     option (google.api.http) = {
       get: "/api/console/zone"
     };
@@ -26,7 +26,7 @@ service Zone {
   //
   // Query parameter "id" is required.
   // Example: /api/console/zone/1
-  rpc GetZone (resource.GetZoneRequest) returns (resource.GetZoneReply) {
+  rpc GetZone (GetZoneRequest) returns (GetZoneReply) {
     option (google.api.http) = {
       get: "/api/console/zone/{id}"
     };
@@ -35,7 +35,7 @@ service Zone {
   // CreateZone creates a new zone.
   //
   // ...
-  rpc CreateZone (resource.CreateZoneRequest) returns (resource.CreateZoneReply) {
+  rpc CreateZone (CreateZoneRequest) returns (CreateZoneReply) {
     option (google.api.http) = {
       post: "/api/console/zone"
       body: "*"
@@ -45,7 +45,7 @@ service Zone {
   // UpdateZone updates the zone.
   //
   // ...
-  rpc UpdateZone (resource.UpdateZoneRequest) returns (resource.UpdateZoneReply) {
+  rpc UpdateZone (UpdateZoneRequest) returns (UpdateZoneReply) {
     option (google.api.http) = {
       put: "/api/console/zone/{id}"
       body: "*"
@@ -55,7 +55,7 @@ service Zone {
   // DisableZone disables the zone.
   //
   // ...
-  rpc DisableZone (resource.DisableZoneRequest) returns (resource.DisableZoneReply) {
+  rpc DisableZone (DisableZoneRequest) returns (DisableZoneReply) {
     option (google.api.http) = {
       post: "/api/console/zone/{id}/disable",
       body: "*"
@@ -65,7 +65,7 @@ service Zone {
   // DeleteZone deletes the zone.
   //
   // ...
-  rpc DeleteZone (resource.DeleteZoneRequest) returns (resource.DeleteZoneReply) {
+  rpc DeleteZone (DeleteZoneRequest) returns (DeleteZoneReply) {
     option (google.api.http) = {
       delete: "/api/console/zone/{id}"
     };
@@ -154,6 +154,8 @@ message UpdateZoneRequest {
  string region_name = 4;
  // 地区代码
  string region_code = 5;
+ // 环境
+  string env = 6;
 }
 
 message UpdateZoneReply {

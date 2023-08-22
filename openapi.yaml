@@ -379,6 +379,9 @@ components:
                 region_code:
                     type: string
                     description: 地区代码
+                env:
+                    type: string
+                    description: 环境
         api.console.resource.ZoneInfo:
             type: object
             properties:

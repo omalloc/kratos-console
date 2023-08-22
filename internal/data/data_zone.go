@@ -48,6 +48,7 @@ func (r *zoneRepo) CreateZone(ctx context.Context, zone *biz.Zone) error {
 func (r *zoneRepo) UpdateZone(ctx context.Context, zone *biz.Zone) error {
 	return r.data.db.WithContext(ctx).
 		Model(&biz.Zone{}).
+		Omit("id").
 		Where("id = ?", zone.ID).
 		Updates(zone).
 		Error
