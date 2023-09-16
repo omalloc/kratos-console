@@ -8,6 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 
+	discoverypb "github.com/omalloc/kratos-console/api/console/discovery"
 	resourcepb "github.com/omalloc/kratos-console/api/console/resource"
 	"github.com/omalloc/kratos-console/internal/conf"
 	"github.com/omalloc/kratos-console/internal/service"
@@ -15,9 +16,13 @@ import (
 
 // NewGRPCServer new a gRPC server.
 func NewGRPCServer(c *conf.Server, logger log.Logger,
+	// resouces
 	zone *service.ZoneService,
 	node *service.NodeService,
 	app *service.AppService,
+	namespace *service.NamespaceService,
+	// discovery
+	discovery *service.DiscoveryService,
 ) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
@@ -40,5 +45,7 @@ func NewGRPCServer(c *conf.Server, logger log.Logger,
 	resourcepb.RegisterZoneServer(srv, zone)
 	resourcepb.RegisterNodeServer(srv, node)
 	resourcepb.RegisterAppServer(srv, app)
+	resourcepb.RegisterNamespaceServer(srv, namespace)
+	discoverypb.RegisterDiscoveryServer(srv, discovery)
 	return srv
 }

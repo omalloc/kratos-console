@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/samber/lo"
 
@@ -26,25 +27,34 @@ func NewAppService(logger log.Logger, app *biz.AppUsecase) *AppService {
 }
 
 func (s *AppService) List(ctx context.Context, req *pb.AppListRequest) (*pb.AppListReply, error) {
-	apps, total, err := s.app.GetAppList(ctx, &biz.QueryPager{
-		Current:  req.Current,
-		PageSize: req.PageSize,
-	})
+	pagination := types.Wrap(req.Pagination)
+	apps, err := s.app.GetAppList(ctx, pagination)
 	if err != nil {
 		return nil, err
 	}
 
 	return &pb.AppListReply{
-		Total: total,
 		Data: lo.Map(apps, func(app *biz.App, _ int) *pb.AppInfo {
 			return &pb.AppInfo{
 				Id:          app.ID,
 				Name:        app.Name,
+				Alias:       app.Alias,
 				Description: app.Description,
 				Icon:        app.Icon,
-				CreatedAt:   app.CreatedAt.Unix(),
-				UpdatedAt:   app.UpdatedAt.Unix(),
+				Ports: lo.Map(app.Ports, func(item biz.Port, _ int) *pb.AppInfo_AppPort {
+					return &pb.AppInfo_AppPort{
+						Port:     uint32(item.Port),
+						Protocol: pb.AppInfo_AppPort_Protocol(pb.AppInfo_AppPort_Protocol_value[item.Protocol]),
+						Remark:   item.Remark,
+					}
+				}),
+				Type:      pb.AppInfo_AppType(app.Type),
+				Users:     app.Users,
+				Repos:     []string{},
+				CreatedAt: app.CreatedAt.Unix(),
+				UpdatedAt: app.UpdatedAt.Unix(),
 			}
 		}),
+		Pagination: pagination.Resp(),
 	}, nil
 }

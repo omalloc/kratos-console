@@ -9,19 +9,21 @@ type zoneRepo struct {
 	data *Data
 }
 
-func (r *zoneRepo) GetZoneList(ctx context.Context, query *biz.QueryPager) ([]*biz.Zone, int64, error) {
-	var (
-		count int64
-		zones []*biz.Zone
-	)
+func (r *zoneRepo) GetZoneList(ctx context.Context, query *biz.ZoneQuery) ([]*biz.Zone, error) {
+	var zones []*biz.Zone
 
-	err := r.data.db.WithContext(ctx).
-		Model(&biz.Zone{}).
-		Count(&count).
-		Offset(int((query.Current - 1) * query.PageSize)).
-		Limit(int(query.PageSize)).
-		Find(&zones).Error
-	return zones, count, err
+	tx := r.data.db.WithContext(ctx).
+		Model(&biz.Zone{})
+	if query.Env != "" {
+		tx.Where("env = ?", query.Env)
+	}
+
+	err := tx.Scopes(query.Paginate()).
+		Count(query.Count()).
+		Find(&zones).
+		Error
+
+	return zones, err
 }
 
 func (r *zoneRepo) GetZoneByID(ctx context.Context, ID int64) (*biz.Zone, error) {

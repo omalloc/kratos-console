@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -9,17 +10,15 @@ type appRepo struct {
 	data *Data
 }
 
-func (r *appRepo) List(ctx context.Context, query *biz.QueryPager) ([]*biz.App, int64, error) {
+func (r *appRepo) List(ctx context.Context, pagination *types.Pagination) ([]*biz.App, error) {
 	var (
-		apps  []*biz.App
-		count int64
+		apps []*biz.App
 	)
 	err := r.data.db.WithContext(ctx).Model(&biz.App{}).
-		Offset(int((query.Current - 1) * query.PageSize)).
-		Limit(int(query.PageSize)).
-		Count(&count).
+		Scopes(pagination.Paginate()).
+		Count(pagination.Count()).
 		Find(&apps).Error
-	return apps, count, err
+	return apps, err
 }
 
 func NewAppRepo(data *Data) biz.AppRepo {

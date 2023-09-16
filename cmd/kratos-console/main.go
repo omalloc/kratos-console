@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/go-kratos/kratos/v2/encoding/json"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -40,6 +41,8 @@ var (
 
 func init() {
 	_, _ = maxprocs.Set(maxprocs.Logger(nil))
+
+	json.MarshalOptions.UseProtoNames = true
 
 	rootCmd.PersistentFlags().StringVar(&flagconf, "conf", "../../configs", "config path")
 	rootCmd.PersistentFlags().BoolVarP(&flagverbose, "verbose", "v", false, "verbose output")

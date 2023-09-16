@@ -7,14 +7,29 @@ option java_multiple_files = true;
 option java_package = "api.console.resource";
 
 import "google/api/annotations.proto";
+import "types/pagination.proto";
 
 // 节点服务
 //
 // 节点服务提供可用部署节点相关的接口
 service Node {
     rpc List(NodeListRequest) returns (NodeListReply) {
+        option (google.api.http).get = "/api/console/node";
+    }
+
+    rpc Create(CreateNodeRequest) returns (CreateNodeReply) {
         option (google.api.http) = {
-            get: "/api/console/node"
+            post: "/api/console/node"
+            body: "*"
+            response_body: "data"
+        };
+    }
+
+    rpc Update(UpdateNodeRequest) returns (UpdateNodeReply) {
+        option (google.api.http) = {
+            put: "/api/console/node/{id}",
+            body: "*"
+            response_body: "data"
         };
     }
 }
@@ -51,7 +66,7 @@ message NodeInfo {
     // 节点更新时间
     int64 updated_at = 6;
     // 可用区ID
-    int64 zone_id = 7;
+    int32 zone_id = 7;
     // 可用区编码
     string zone_code = 8;
     // 可用区名称
@@ -60,16 +75,53 @@ message NodeInfo {
     string region_code = 10;
     // 地区名称
     string region_name = 11;
+    // 环境变量
+    string env = 12;
+    // 自动上报信息
+    bool auto_detect = 13;
 }
 
 message NodeListRequest {
-    // 页码
-    int32 current = 1;
-    // 每页数量
-    int32 page_size = 2;
+    types.Pagination pagination = 1;
 }
 
 message NodeListReply {
-    repeated NodeInfo data = 1;
-    int64 total = 2;
+    types.Pagination pagination = 1;
+    repeated NodeInfo data = 2;
+}
+
+message CreateNodeRequest {
+    // 节点名称
+    string name = 1;
+    // 节点IP
+    string ip = 2;
+    // Agent自动上报开关
+    bool auto_detect = 3;
+    // 可用区ID
+    int32 zone_id = 4;
+    // 环境变量
+    string env = 5;
+}
+
+message CreateNodeReply {
+    NodeInfo data = 1;
+}
+
+message UpdateNodeRequest {
+    // 节点名称
+    string name = 1;
+    // 节点IP
+    string ip = 2;
+    // Agent自动上报开关
+    bool auto_detect = 3;
+    // 可用区ID
+    int32 zone_id = 4;
+    // 环境变量
+    string env = 5;
+    // 节点ID
+    int32 id = 6;
+}
+
+message UpdateNodeReply {
+    NodeInfo data = 1;
 }

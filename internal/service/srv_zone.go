@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/omalloc/kratos-console/api/types"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -26,10 +27,11 @@ func NewZoneService(logger log.Logger, zone *biz.ZoneUsecase) *ZoneService {
 	}
 }
 
-func (s *ZoneService) GetZoneList(ctx context.Context, req *pb.GetZoneListRequest) (*pb.GetZoneListReply, error) {
-	data, total, err := s.zone.GetZoneList(ctx, &biz.QueryPager{
-		PageSize: req.PageSize,
-		Current:  req.Current,
+func (s *ZoneService) List(ctx context.Context, req *pb.GetZoneListRequest) (*pb.GetZoneListReply, error) {
+	pagination := types.Wrap(req.Pagination)
+	data, err := s.zone.GetZoneList(ctx, &biz.ZoneQuery{
+		Pagination: pagination,
+		Env:        req.Env,
 	})
 
 	if err != nil {
@@ -49,11 +51,11 @@ func (s *ZoneService) GetZoneList(ctx context.Context, req *pb.GetZoneListReques
 				UpdatedAt:  item.UpdatedAt.Format(time.RFC3339),
 			}
 		}),
-		Total: int32(total),
+		Pagination: pagination.Resp(),
 	}, nil
 }
 
-func (s *ZoneService) GetZone(ctx context.Context, req *pb.GetZoneRequest) (*pb.GetZoneReply, error) {
+func (s *ZoneService) Get(ctx context.Context, req *pb.GetZoneRequest) (*pb.GetZoneReply, error) {
 	zone, err := s.zone.GetZone(ctx, int64(req.Id))
 	if err != nil {
 		return nil, errors.NotFound("ZONE_NOT_FOUND", "Zone Not Found")
@@ -72,7 +74,7 @@ func (s *ZoneService) GetZone(ctx context.Context, req *pb.GetZoneRequest) (*pb.
 	}, nil
 }
 
-func (s *ZoneService) CreateZone(ctx context.Context, req *pb.CreateZoneRequest) (*pb.CreateZoneReply, error) {
+func (s *ZoneService) Create(ctx context.Context, req *pb.CreateZoneRequest) (*pb.CreateZoneReply, error) {
 	zone, err := s.zone.CreateZone(ctx, req)
 	return &pb.CreateZoneReply{
 		Data: &pb.ZoneInfo{
@@ -86,18 +88,18 @@ func (s *ZoneService) CreateZone(ctx context.Context, req *pb.CreateZoneRequest)
 	}, err
 }
 
-func (s *ZoneService) UpdateZone(ctx context.Context, req *pb.UpdateZoneRequest) (*pb.UpdateZoneReply, error) {
+func (s *ZoneService) Update(ctx context.Context, req *pb.UpdateZoneRequest) (*pb.UpdateZoneReply, error) {
 	if err := s.zone.UpdateZone(ctx, req); err != nil {
 		return nil, err
 	}
 	return nil, nil
 }
 
-func (s *ZoneService) DisableZone(ctx context.Context, req *pb.DisableZoneRequest) (*pb.DisableZoneReply, error) {
+func (s *ZoneService) Disable(ctx context.Context, req *pb.DisableZoneRequest) (*pb.DisableZoneReply, error) {
 	return &pb.DisableZoneReply{}, nil
 }
 
-func (s *ZoneService) DeleteZone(ctx context.Context, req *pb.DeleteZoneRequest) (*pb.DeleteZoneReply, error) {
+func (s *ZoneService) Delete(ctx context.Context, req *pb.DeleteZoneRequest) (*pb.DeleteZoneReply, error) {
 	err := s.zone.DeleteZone(ctx, int64(req.Id))
 	if err != nil {
 		return nil, err

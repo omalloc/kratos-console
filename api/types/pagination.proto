@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package api.types;
+
+option go_package = "github.com/omalloc/kratos-console/api/types;types";
+option java_multiple_files = true;
+option java_package = "api.types";
+
+// 通用的分页信息
+message Pagination {
+  int32 current = 1;
+  int32 page_size = 2;
+  int32 total = 3;
+  optional int64 raw_total = 4;
+}
+
+// `Query` example
+//      message GetSomethingRequest {
+//          // pagination defines an pagination for the request.
+//          Pagination pagination = 1;
+//          // query filters...
+//          string name = 2;
+//      }
+//
+// `PageData` example
+//      message PageData {
+//        // pagination defines an pagination for the response.
+//        Pagination pagination = 1;
+//        // page data
+//        repeated any data = 2;
+//      }
+//

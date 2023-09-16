@@ -7,65 +7,62 @@ option java_multiple_files = true;
 option java_package = "api.console.resource";
 
 import "google/api/annotations.proto";
+import "types/pagination.proto";
 
 
 // ZoneService is the resource `data-center` definition.
 //
 // version: v1
 service Zone {
-  // GetZoneList returns a list of zones.
+  // List returns a list of zones.
   //
   // The list is sorted by zone id.
-  rpc GetZoneList (GetZoneListRequest) returns (GetZoneListReply) {
-    option (google.api.http) = {
-      get: "/api/console/zone"
-    };
+  rpc List (GetZoneListRequest) returns (GetZoneListReply) {
+    option (google.api.http).get = "/api/console/zone";
   }
 
-  // GetZone returns the zone.
+  // Get returns the zone.
   //
   // Query parameter "id" is required.
   // Example: /api/console/zone/1
-  rpc GetZone (GetZoneRequest) returns (GetZoneReply) {
-    option (google.api.http) = {
-      get: "/api/console/zone/{id}"
-    };
+  rpc Get (GetZoneRequest) returns (GetZoneReply) {
+    option (google.api.http).get = "/api/console/zone/{id}";
   }
 
-  // CreateZone creates a new zone.
+  // Create creates a new zone.
   //
   // ...
-  rpc CreateZone (CreateZoneRequest) returns (CreateZoneReply) {
+  rpc Create (CreateZoneRequest) returns (CreateZoneReply) {
     option (google.api.http) = {
       post: "/api/console/zone"
       body: "*"
     };
   }
 
-  // UpdateZone updates the zone.
+  // Update updates the zone.
   //
   // ...
-  rpc UpdateZone (UpdateZoneRequest) returns (UpdateZoneReply) {
+  rpc Update (UpdateZoneRequest) returns (UpdateZoneReply) {
     option (google.api.http) = {
       put: "/api/console/zone/{id}"
       body: "*"
     };
   }
 
-  // DisableZone disables the zone.
+  // Disable disables the zone.
   //
   // ...
-  rpc DisableZone (DisableZoneRequest) returns (DisableZoneReply) {
+  rpc Disable (DisableZoneRequest) returns (DisableZoneReply) {
     option (google.api.http) = {
       post: "/api/console/zone/{id}/disable",
       body: "*"
     };
   }
 
-  // DeleteZone deletes the zone.
+  // Delete deletes the zone.
   //
   // ...
-  rpc DeleteZone (DeleteZoneRequest) returns (DeleteZoneReply) {
+  rpc Delete (DeleteZoneRequest) returns (DeleteZoneReply) {
     option (google.api.http) = {
       delete: "/api/console/zone/{id}"
     };
@@ -74,6 +71,16 @@ service Zone {
 
 // 可用区
 message ZoneInfo {
+  // 状态
+  enum Status {
+    // 未知
+    UNKNOWN = 0;
+    // 正常
+    ENABLED = 1;
+    // 禁用
+    DISABLED = 2;
+  }
+
   // 可用区ID
   int32 id = 1;
   // 可用区名称
@@ -86,10 +93,12 @@ message ZoneInfo {
   string region_code = 5;
   // 环境
   string env = 6;
+  // 状态
+  Status status = 7;
   // 创建时间
-  string created_at = 7;
+  string created_at = 8;
   // 更新时间
-  string updated_at = 8;
+  string updated_at = 9;
 }
 
 // 排序
@@ -101,19 +110,20 @@ message OrderBy {
 }
 
 message GetZoneListRequest {
-  // 页码
-  int32 current = 1;
-  // 每页数量
-  int32 page_size = 2;
+  // 分页信息
+  types.Pagination pagination = 1;
+  // 查询条件 env 环境变量
+  string env = 3;
+  // 查询条件 status 状态 1=正常，2=禁用
+  ZoneInfo.Status status = 4;
   // 排序字段
-  repeated OrderBy order_by = 3;
+  repeated OrderBy order_by = 5;
 }
 
 message GetZoneListReply {
+  types.Pagination pagination = 1;
   // 可用区列表
-  repeated ZoneInfo data = 1;
-  // 总数
-  int32 total = 2;
+  repeated ZoneInfo data = 2;
 }
 
 message GetZoneRequest {

@@ -14,6 +14,7 @@ import (
 	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/omalloc/kratos-console/internal/conf"
 	"github.com/omalloc/kratos-console/internal/data"
+	"github.com/omalloc/kratos-console/internal/discovery"
 	"github.com/omalloc/kratos-console/internal/server"
 	"github.com/omalloc/kratos-console/internal/service"
 )
@@ -42,9 +43,20 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 	appRepo := data.NewAppRepo(dataData)
 	appUsecase := biz.NewAppUsecase(logger, appRepo)
 	appService := service.NewAppService(logger, appUsecase)
-	grpcServer := server.NewGRPCServer(confServer, logger, zoneService, nodeService, appService)
-	httpServer := server.NewHTTPServer(confServer, logger, zoneService, nodeService, appService)
-	v := server.NewChecker(dataData)
+	namespaceRepo := data.NewNamespaceRepo(logger, dataData)
+	namespaceUsecase := biz.NewNamespaceUsecase(logger, namespaceRepo)
+	namespaceService := service.NewNamespaceService(logger, namespaceUsecase)
+	registryDiscovery := registry.NewDiscovery(client)
+	agentClient, err := discovery.NewAgentService(logger, registryDiscovery)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	discoveryService := service.NewDiscoveryService(logger, agentClient)
+	grpcServer := server.NewGRPCServer(confServer, logger, zoneService, nodeService, appService, namespaceService, discoveryService)
+	httpServer := server.NewHTTPServer(confServer, logger, zoneService, nodeService, appService, namespaceService, discoveryService)
+	v := server.NewChecker(dataData, client)
 	healthServer := health.NewServer(v, logger, httpServer)
 	app := newApp(logger, registrar, grpcServer, httpServer, healthServer)
 	return app, func() {

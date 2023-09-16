@@ -3,19 +3,30 @@ package biz
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/omalloc/kratos-console/api/types"
 )
 
-type App struct {
-	DBModel
+type Port struct {
+	Port     uint   `json:"port"`
+	Protocol string `json:"protocol,omitempty"`
+	Remark   string `json:"remark,omitempty"`
+}
 
-	ID          int64  `json:"id" gorm:"column:id;primaryKey;autoIncrement;comment:应用ID"`
-	Name        string `json:"name" gorm:"column:name;type:varchar(64);not null;comment:应用名称"`
-	Description string `json:"description" gorm:"column:description;type:varchar(256);not null;comment:应用描述"`
-	Icon        string `json:"icon" gorm:"column:icon;type:varchar(256);not null;comment:应用图标"`
+type App struct {
+	ID          int64    `json:"id" gorm:"column:id;primaryKey;autoIncrement;comment:应用ID"`
+	Name        string   `json:"name" gorm:"column:name;type:varchar(64);not null;comment:应用名称"`
+	Alias       string   `json:"alias" gorm:"column:alias;type:varchar(64);not null;comment:应用别名,有别名优先展示别名"`
+	Type        int      `json:"type" gorm:"column:type;type:int(11);not null;comment:应用类型(1-系统应用,2-WEB应用,3-API应用,4-子服务,0,5-未定义)"`
+	Ports       []Port   `json:"ports" gorm:"column:ports;type:json;serializer:json;comment:应用预期端口,使用0端口表示随机分配"`
+	Users       []string `json:"users" gorm:"column:users;type:json;serializer:json;comment:应用负责人"`
+	Description string   `json:"description" gorm:"column:description;type:varchar(256);not null;comment:应用描述"`
+	Icon        string   `json:"icon" gorm:"column:icon;type:varchar(256);default null;comment:应用图标"`
+
+	types.DBModel
 }
 
 type AppRepo interface {
-	List(ctx context.Context, query *QueryPager) ([]*App, int64, error)
+	List(ctx context.Context, pagination *types.Pagination) ([]*App, error)
 }
 
 type AppUsecase struct {
@@ -31,6 +42,6 @@ func NewAppUsecase(logger log.Logger, repo AppRepo) *AppUsecase {
 	}
 }
 
-func (uc *AppUsecase) GetAppList(ctx context.Context, pager *QueryPager) ([]*App, int64, error) {
-	return uc.repo.List(ctx, pager)
+func (uc *AppUsecase) GetAppList(ctx context.Context, pagination *types.Pagination) ([]*App, error) {
+	return uc.repo.List(ctx, pagination)
 }

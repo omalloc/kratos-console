@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/samber/lo"
 	"time"
@@ -25,15 +26,13 @@ func NewNodeService(logger log.Logger, node *biz.NodeUsecase) *NodeService {
 }
 
 func (s *NodeService) List(ctx context.Context, req *pb.NodeListRequest) (*pb.NodeListReply, error) {
-	nodes, total, err := s.node.GetNodeList(ctx, &biz.QueryPager{
-		Current:  req.Current,
-		PageSize: req.PageSize,
-	})
+	pagination := types.Wrap(req.Pagination)
+	nodes, err := s.node.GetNodeList(ctx, pagination)
 	if err != nil {
 		return nil, err
 	}
+
 	return &pb.NodeListReply{
-		Total: total,
 		Data: lo.Map(nodes, func(node *biz.NodeInfo, _ int) *pb.NodeInfo {
 			return &pb.NodeInfo{
 				Id:   int32(node.ID),
@@ -44,14 +43,47 @@ func (s *NodeService) List(ctx context.Context, req *pb.NodeListRequest) (*pb.No
 					HeartbeatTime: time.Now().Unix(),
 					Version:       "v1.0.2",
 				},
-				ZoneId:     node.ZoneID,
+				ZoneId:     int32(node.ZoneID),
 				ZoneName:   node.ZoneName,
 				ZoneCode:   node.ZoneCode,
 				RegionName: node.RegionName,
 				RegionCode: node.RegionCode,
+				Env:        node.Env,
 				CreatedAt:  node.CreatedAt.Unix(),
 				UpdatedAt:  node.UpdatedAt.Unix(),
 			}
 		}),
+		Pagination: pagination.Resp(),
 	}, nil
+}
+
+func (s *NodeService) Create(ctx context.Context, req *pb.CreateNodeRequest) (*pb.CreateNodeReply, error) {
+	node, err := s.node.CreateNode(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.CreateNodeReply{
+		Data: s.toNodeInfo(node),
+	}, nil
+}
+
+func (s *NodeService) Update(ctx context.Context, req *pb.UpdateNodeRequest) (*pb.UpdateNodeReply, error) {
+	node, err := s.node.UpdateNode(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.UpdateNodeReply{
+		Data: s.toNodeInfo(node),
+	}, nil
+}
+
+func (s *NodeService) toNodeInfo(node *biz.Node) *pb.NodeInfo {
+	return &pb.NodeInfo{
+		Id:         int32(node.ID),
+		Name:       node.Name,
+		Ip:         node.IP,
+		AutoDetect: node.AutoDetect,
+		Env:        node.Env,
+	}
 }

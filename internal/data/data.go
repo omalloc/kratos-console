@@ -2,13 +2,12 @@ package data
 
 import (
 	"context"
-	"time"
-
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"github.com/omalloc/contrib/kratos/orm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"time"
 
 	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/omalloc/kratos-console/internal/conf"
@@ -20,6 +19,7 @@ var ProviderSet = wire.NewSet(
 	NewZoneRepo,
 	NewNodeRepo,
 	NewAppRepo,
+	NewNamespaceRepo,
 )
 
 var (
@@ -34,8 +34,6 @@ type Data struct {
 
 // NewData .
 func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
-	logFilter := log.NewFilter(logger, log.FilterLevel(log.LevelDebug))
-	dbLog := log.NewHelper(logFilter)
 
 	db, err := orm.New(
 		orm.WithDriver(mysql.Open(c.Database.Source)),
@@ -45,7 +43,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 			orm.WIthSlowThreshold(time.Second*2),
 			orm.WithSkipCallerLookup(false),
 			orm.WithSkipErrRecordNotFound(true),
-			orm.WithLogHelper(logFilter),
+			orm.WithLogHelper(logger),
 		),
 	)
 
@@ -57,10 +55,12 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		AutoMigrate(
 			&biz.Zone{},
 			&biz.Node{},
+			&biz.App{},
+			&biz.Namespace{},
 		)
 
 	cleanup := func() {
-		dbLog.Info("closing the data resources")
+		log.Info("closing the data resources")
 	}
 
 	return &Data{

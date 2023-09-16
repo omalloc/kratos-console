@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	pb "github.com/omalloc/kratos-console/api/console/resource"
+	"github.com/omalloc/kratos-console/api/types"
 )
 
 type EnvType string
@@ -15,20 +16,26 @@ const (
 	EnvProd EnvType = "prod"
 )
 
+type ZoneQuery struct {
+	*types.Pagination
+
+	Env string `json:"env"`
+}
+
 type Zone struct {
 	ID         int64  `json:"id" gorm:"primaryKey"`
-	Name       string `json:"name" gorm:"column:name;type:varchar(32);"`
-	Code       string `json:"code" gorm:"column:code;type:varchar(32);"`
-	RegionName string `json:"region_name" gorm:"column:region_name;type:varchar(32);"`
-	RegionCode string `json:"region_code" gorm:"column:region_code;type:varchar(32);"`
-	Env        string `json:"env" gorm:"column:env;type:varchar(12);"`
-	Status     int    `json:"status" gorm:"column:status;type:tinyint(1);default:1;comment:'1:正常;2:禁用'"`
+	Name       string `json:"name" gorm:"column:name;type:varchar(32);comment:可用区名称"`
+	Code       string `json:"code" gorm:"column:code;type:varchar(32);comment:可用区代码"`
+	RegionName string `json:"region_name" gorm:"column:region_name;type:varchar(32);comment:地区名称"`
+	RegionCode string `json:"region_code" gorm:"column:region_code;type:varchar(32);comment:地区代码"`
+	Env        string `json:"env" gorm:"column:env;type:varchar(12);comment:环境变量dev,test,qa,prod,etc.."`
+	Status     int    `json:"status" gorm:"column:status;type:tinyint(1);default:1;comment:1=正常,2=禁用"`
 
-	DBModel
+	types.DBModel
 }
 
 type ZoneRepo interface {
-	GetZoneList(ctx context.Context, query *QueryPager) ([]*Zone, int64, error)
+	GetZoneList(ctx context.Context, query *ZoneQuery) ([]*Zone, error)
 	GetZoneByID(context.Context, int64) (*Zone, error)
 	CreateZone(context.Context, *Zone) error
 	UpdateZone(context.Context, *Zone) error
@@ -48,7 +55,7 @@ func NewZoneUsecase(repo ZoneRepo, logger log.Logger) *ZoneUsecase {
 	}
 }
 
-func (uc *ZoneUsecase) GetZoneList(ctx context.Context, query *QueryPager) ([]*Zone, int64, error) {
+func (uc *ZoneUsecase) GetZoneList(ctx context.Context, query *ZoneQuery) ([]*Zone, error) {
 	return uc.repo.GetZoneList(ctx, query)
 }
 

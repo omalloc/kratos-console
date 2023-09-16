@@ -13,11 +13,12 @@ import (
 	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/omalloc/kratos-console/internal/conf"
 	"github.com/omalloc/kratos-console/internal/data"
+	"github.com/omalloc/kratos-console/internal/discovery"
 	"github.com/omalloc/kratos-console/internal/server"
 	"github.com/omalloc/kratos-console/internal/service"
 )
 
 // wireApp init kratos application.
 func wireApp(*conf.Bootstrap, *conf.Server, *conf.Data, log.Logger) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, discovery.ProviderSet, newApp))
 }

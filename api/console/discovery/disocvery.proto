@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package api.console.discovery;
+
+option go_package = "github.com/omalloc/kratos-console/api/console/discovery;discovery";
+option java_multiple_files = true;
+option java_package = "api.console.discovery";
+
+import "google/api/annotations.proto";
+import "types/pagination.proto";
+
+service Discovery {
+	rpc OnlineServices (OnlineServiceRequest) returns (OnlineServiceReply) {
+		option (google.api.http).get = "/api/console/discovery/services/-/online";
+	};
+}
+
+message Service {
+	// 唯一标识
+	string key = 1;
+	// 主机名
+	string hostname = 2;
+	// 服务名称
+	string name = 3;
+	// 版本
+	string version = 4;
+	// 服务地址
+	repeated string endpoints = 5;
+	// 集群
+	string cluster = 6;
+	// 挂起状态 true 为挂起
+	bool hang = 7;
+	// 元信息
+	map<string, string> metadata = 8;
+}
+
+message ServiceGroup {
+	// 唯一标识
+	string key = 1;
+	// 主机名
+	string hostname = 2;
+	// 服务名称
+	string name = 3;
+	// 版本
+	string version = 4;
+	// 服务地址
+	repeated string endpoints = 5;
+	// 集群
+	repeated string clusters = 6;
+  // 同服务，不同实例的数组信息
+	repeated Service children = 7;
+}
+
+message OnlineServiceRequest {
+	// pagination filter
+	types.Pagination pagination = 1;
+	// service name
+	string name = 2;
+}
+message OnlineServiceReply {
+		types.Pagination pagination = 1;
+		repeated ServiceGroup data = 2;
+};

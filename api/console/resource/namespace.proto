@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package api.console.resource;
+
+option go_package = "github.com/omalloc/kratos-console/api/console/resource;resource";
+option java_multiple_files = true;
+option java_package = "api.console.resource";
+
+import "google/api/annotations.proto";
+import "types/pagination.proto";
+
+service Namespace {
+	rpc List (ListRequest) returns (ListReply) {
+		option (google.api.http).get = "/api/console/namespace";
+	}
+
+	rpc Get (GetRequest) returns (GetReply) {
+		option (google.api.http).get = "/api/console/namespace/{id}";
+	}
+
+	rpc Create (CreateRequest) returns (CreateReply) {
+		option (google.api.http) = {
+			post: "/api/console/namespace";
+			body: "*";
+		};
+	}
+
+	rpc Update (UpdateRequest) returns (UpdateReply) {
+		option (google.api.http) = {
+			put: "/api/console/namespace/{id}";
+			body: "*";
+		};
+	}
+
+	rpc Delete (DeleteRequest) returns (DeleteReply) {
+		option (google.api.http).delete = "/api/console/namespace/{id}";
+	}
+}
+
+message NamespaceInfo {
+	int64 id = 1;
+	string name = 2;
+	string alias = 3;
+	string description = 4;
+	string created_at = 5;
+	string updated_at = 6;
+}
+
+message ListRequest {
+	types.Pagination pagination = 1;
+	string name = 2;
+}
+
+message ListReply {
+	types.Pagination pagination = 1;
+	repeated NamespaceInfo data = 2;
+}
+
+message GetRequest {
+	string id = 1;
+}
+
+message GetReply {
+	NamespaceInfo data = 1;
+}
+
+message CreateRequest {
+	string name = 1;
+	string alias = 2;
+	string description = 3;
+}
+
+message CreateReply {
+	NamespaceInfo data = 1;
+}
+
+message UpdateRequest {
+	int64 id = 1;
+	string name = 2;
+	string alias = 3;
+	string description = 4;
+}
+
+message UpdateReply {
+	NamespaceInfo data = 1;
+}
+
+message DeleteRequest {
+	int64 id = 1;
+}
+
+message DeleteReply {
+}
