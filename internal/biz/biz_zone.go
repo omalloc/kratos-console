@@ -2,7 +2,9 @@ package biz
 
 import (
 	"context"
+
 	"github.com/go-kratos/kratos/v2/log"
+
 	pb "github.com/omalloc/kratos-console/api/console/resource"
 	"github.com/omalloc/kratos-console/api/types"
 )
@@ -37,6 +39,7 @@ type Zone struct {
 type ZoneRepo interface {
 	GetZoneList(ctx context.Context, query *ZoneQuery) ([]*Zone, error)
 	GetZoneByID(context.Context, int64) (*Zone, error)
+	SelectSimpleList(context.Context) ([]*Zone, error)
 	CreateZone(context.Context, *Zone) error
 	UpdateZone(context.Context, *Zone) error
 	DisableZone(context.Context, int64) error
@@ -57,6 +60,10 @@ func NewZoneUsecase(repo ZoneRepo, logger log.Logger) *ZoneUsecase {
 
 func (uc *ZoneUsecase) GetZoneList(ctx context.Context, query *ZoneQuery) ([]*Zone, error) {
 	return uc.repo.GetZoneList(ctx, query)
+}
+
+func (uc *ZoneUsecase) GetSimpleList(ctx context.Context) ([]*Zone, error) {
+	return uc.repo.SelectSimpleList(ctx)
 }
 
 func (uc *ZoneUsecase) GetZone(ctx context.Context, ID int64) (*Zone, error) {

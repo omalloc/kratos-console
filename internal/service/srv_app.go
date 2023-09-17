@@ -2,12 +2,13 @@ package service
 
 import (
 	"context"
+
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/omalloc/kratos-console/api/types"
-	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/samber/lo"
 
 	pb "github.com/omalloc/kratos-console/api/console/resource"
+	"github.com/omalloc/kratos-console/api/types"
+	"github.com/omalloc/kratos-console/internal/biz"
 )
 
 // AppService 应用服务
@@ -57,4 +58,34 @@ func (s *AppService) List(ctx context.Context, req *pb.AppListRequest) (*pb.AppL
 		}),
 		Pagination: pagination.Resp(),
 	}, nil
+}
+
+func (s *AppService) Create(ctx context.Context, req *pb.AppCreateRequest) (*pb.AppCreateReply, error) {
+	data := toData(req.Data)
+	if err := s.app.CreateApp(ctx, data); err != nil {
+		return nil, err
+	}
+
+	req.Data.Id = data.ID
+	return &pb.AppCreateReply{
+		Data: req.Data,
+	}, nil
+}
+
+func toData(req *pb.AppInfo) *biz.App {
+	return &biz.App{
+		Name:        req.Name,
+		Alias:       req.Alias,
+		Description: req.Description,
+		Icon:        req.Icon,
+		Users:       req.Users,
+		Repos:       req.Repos,
+		Ports: lo.Map(req.Ports, func(item *pb.AppInfo_AppPort, _ int) biz.Port {
+			return biz.Port{
+				Port:     uint(item.Port),
+				Protocol: item.Protocol.String(),
+				Remark:   item.Remark,
+			}
+		}),
+	}
 }

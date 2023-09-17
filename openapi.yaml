@@ -47,6 +47,23 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.console.resource.AppListReply'
+        post:
+            tags:
+                - App
+            operationId: App_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.console.resource.AppInfo'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.console.resource.AppCreateReply'
     /api/console/app/{id}:
         get:
             tags:
@@ -66,6 +83,48 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.console.resource.AppGetReply'
+        put:
+            tags:
+                - App
+            operationId: App_Update
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.console.resource.AppUpdateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.console.resource.AppUpdateReply'
+        delete:
+            tags:
+                - App
+            operationId: App_Delete
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.console.resource.AppDeleteReply'
     /api/console/discovery/services/-/online:
         get:
             tags:
@@ -140,7 +199,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.console.resource.ListReply'
+                                $ref: '#/components/schemas/api.console.resource.NamespaceListReply'
         post:
             tags:
                 - Namespace
@@ -149,7 +208,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.console.resource.CreateRequest'
+                            $ref: '#/components/schemas/api.console.resource.NamespaceCreateRequest'
                 required: true
             responses:
                 "200":
@@ -157,7 +216,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.console.resource.CreateReply'
+                                $ref: '#/components/schemas/api.console.resource.NamespaceCreateReply'
     /api/console/namespace/{id}:
         get:
             tags:
@@ -175,7 +234,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.console.resource.GetReply'
+                                $ref: '#/components/schemas/api.console.resource.NamespaceGetReply'
         put:
             tags:
                 - Namespace
@@ -191,7 +250,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.console.resource.UpdateRequest'
+                            $ref: '#/components/schemas/api.console.resource.NamespaceUpdateRequest'
                 required: true
             responses:
                 "200":
@@ -199,7 +258,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.console.resource.UpdateReply'
+                                $ref: '#/components/schemas/api.console.resource.NamespaceUpdateReply'
         delete:
             tags:
                 - Namespace
@@ -217,7 +276,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.console.resource.DeleteReply'
+                                $ref: '#/components/schemas/api.console.resource.NamespaceDeleteReply'
     /api/console/node:
         get:
             tags:
@@ -363,6 +422,22 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.console.resource.CreateZoneReply'
+    /api/console/zone/simple:
+        get:
+            tags:
+                - Zone
+            description: |-
+                SimpleList returns a simple-list of zones.
+
+                 The list is sorted by zone create time.
+            operationId: Zone_SimpleList
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.console.resource.SimpleListReply'
     /api/console/zone/{id}:
         get:
             tags:
@@ -554,6 +629,14 @@ components:
                 version:
                     type: string
                     description: Agent版本
+        api.console.resource.AppCreateReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/api.console.resource.AppInfo'
+        api.console.resource.AppDeleteReply:
+            type: object
+            properties: {}
         api.console.resource.AppGetReply:
             type: object
             properties:
@@ -629,6 +712,17 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/api.console.resource.AppInfo'
+        api.console.resource.AppUpdateReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/api.console.resource.AppInfo'
+        api.console.resource.AppUpdateRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
         api.console.resource.CreateNodeReply:
             type: object
             properties:
@@ -653,20 +747,6 @@ components:
                 env:
                     type: string
                     description: 环境变量
-        api.console.resource.CreateReply:
-            type: object
-            properties:
-                data:
-                    $ref: '#/components/schemas/api.console.resource.NamespaceInfo'
-        api.console.resource.CreateRequest:
-            type: object
-            properties:
-                name:
-                    type: string
-                alias:
-                    type: string
-                description:
-                    type: string
         api.console.resource.CreateZoneReply:
             type: object
             properties:
@@ -690,9 +770,6 @@ components:
                 env:
                     type: string
                     description: 环境
-        api.console.resource.DeleteReply:
-            type: object
-            properties: {}
         api.console.resource.DeleteZoneReply:
             type: object
             properties: {}
@@ -709,11 +786,6 @@ components:
                 remark:
                     type: string
                     description: 备注
-        api.console.resource.GetReply:
-            type: object
-            properties:
-                data:
-                    $ref: '#/components/schemas/api.console.resource.NamespaceInfo'
         api.console.resource.GetZoneListReply:
             type: object
             properties:
@@ -729,15 +801,28 @@ components:
             properties:
                 data:
                     $ref: '#/components/schemas/api.console.resource.ZoneInfo'
-        api.console.resource.ListReply:
+        api.console.resource.NamespaceCreateReply:
             type: object
             properties:
-                pagination:
-                    $ref: '#/components/schemas/api.types.Pagination'
                 data:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.console.resource.NamespaceInfo'
+                    $ref: '#/components/schemas/api.console.resource.NamespaceInfo'
+        api.console.resource.NamespaceCreateRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                alias:
+                    type: string
+                description:
+                    type: string
+        api.console.resource.NamespaceDeleteReply:
+            type: object
+            properties: {}
+        api.console.resource.NamespaceGetReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/api.console.resource.NamespaceInfo'
         api.console.resource.NamespaceInfo:
             type: object
             properties:
@@ -753,6 +838,32 @@ components:
                 created_at:
                     type: string
                 updated_at:
+                    type: string
+        api.console.resource.NamespaceListReply:
+            type: object
+            properties:
+                pagination:
+                    $ref: '#/components/schemas/api.types.Pagination'
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.console.resource.NamespaceInfo'
+        api.console.resource.NamespaceUpdateReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/api.console.resource.NamespaceInfo'
+        api.console.resource.NamespaceUpdateRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+                name:
+                    type: string
+                alias:
+                    type: string
+                description:
                     type: string
         api.console.resource.NodeInfo:
             type: object
@@ -808,6 +919,27 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/api.console.resource.NodeInfo'
+        api.console.resource.SimpleListReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.console.resource.SimpleZoneInfo'
+        api.console.resource.SimpleZoneInfo:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 可用区ID
+                    format: int32
+                name:
+                    type: string
+                    description: 可用区名称
+                code:
+                    type: string
+                    description: 可用区代码
+            description: 简单的可用区信息(主要用来枚举展示)
         api.console.resource.UpdateNodeReply:
             type: object
             properties:
@@ -836,23 +968,6 @@ components:
                     type: integer
                     description: 节点ID
                     format: int32
-        api.console.resource.UpdateReply:
-            type: object
-            properties:
-                data:
-                    $ref: '#/components/schemas/api.console.resource.NamespaceInfo'
-        api.console.resource.UpdateRequest:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: int64
-                name:
-                    type: string
-                alias:
-                    type: string
-                description:
-                    type: string
         api.console.resource.UpdateZoneReply:
             type: object
             properties: {}

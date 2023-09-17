@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"github.com/omalloc/kratos-console/api/types"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -10,6 +9,7 @@ import (
 	"github.com/samber/lo"
 
 	pb "github.com/omalloc/kratos-console/api/console/resource"
+	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -52,6 +52,23 @@ func (s *ZoneService) List(ctx context.Context, req *pb.GetZoneListRequest) (*pb
 			}
 		}),
 		Pagination: pagination.Resp(),
+	}, nil
+}
+
+func (s *ZoneService) SimpleList(ctx context.Context, req *pb.SimpleListRequest) (*pb.SimpleListReply, error) {
+	ret, err := s.zone.GetSimpleList(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.SimpleListReply{
+		Data: lo.Map(ret, func(item *biz.Zone, _ int) *pb.SimpleZoneInfo {
+			return &pb.SimpleZoneInfo{
+				Id:   int32(item.ID),
+				Name: item.Name,
+				Code: item.Code,
+			}
+		}),
 	}, nil
 }
 

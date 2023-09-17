@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -38,6 +39,19 @@ func (r *zoneRepo) GetZoneByID(ctx context.Context, ID int64) (*biz.Zone, error)
 		Take(&zone).
 		Error
 	return &zone, err
+}
+
+func (r *zoneRepo) SelectSimpleList(ctx context.Context) ([]*biz.Zone, error) {
+	var (
+		zones []*biz.Zone
+		err   error
+	)
+
+	err = r.data.db.WithContext(ctx).
+		Model(&biz.Zone{}).
+		Order("id DESC").
+		Find(&zones).Error
+	return zones, err
 }
 
 func (r *zoneRepo) CreateZone(ctx context.Context, zone *biz.Zone) error {

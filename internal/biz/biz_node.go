@@ -3,7 +3,9 @@ package biz
 import (
 	"context"
 	"errors"
+
 	"github.com/go-kratos/kratos/v2/log"
+
 	pb "github.com/omalloc/kratos-console/api/console/resource"
 	"github.com/omalloc/kratos-console/api/types"
 )
@@ -30,6 +32,7 @@ type NodeInfo struct {
 	ZoneCode   string `json:"zone_code" gorm:"column:zone_code;"`
 	RegionName string `json:"region_name" gorm:"column:region_name;"`
 	RegionCode string `json:"region_code" gorm:"column:region_code;"`
+	AutoDetect bool   `json:"auto_detect" gorm:"column:auto_detect;type:tinyint(1);default:0;"`
 	//Env        string `json:"env" gorm:"column:env"`
 }
 

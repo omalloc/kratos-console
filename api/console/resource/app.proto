@@ -18,6 +18,24 @@ service App {
     option (google.api.http).get = "/api/console/app/{id}";
   }
 
+  rpc Create (AppCreateRequest) returns (AppCreateReply) {
+    option (google.api.http) = {
+      post: "/api/console/app"
+      body: "data"
+    };
+  }
+
+  rpc Update (AppUpdateRequest) returns (AppUpdateReply) {
+    option (google.api.http) = {
+      put: "/api/console/app/{id}"
+      body: "*"
+    };
+  }
+
+  rpc Delete (AppDeleteRequest) returns (AppDeleteReply) {
+    option (google.api.http).delete = "/api/console/app/{id}";
+  }
+
 }
 
 message AppInfo {
@@ -90,3 +108,25 @@ message AppGetRequest {
 message AppGetReply {
   AppInfo data = 1;
 }
+
+message AppCreateRequest {
+  AppInfo data = 1;
+}
+
+message AppCreateReply {
+  AppInfo data = 1;
+}
+
+message AppUpdateRequest {
+  int64 id = 1;
+}
+
+message AppUpdateReply {
+  AppInfo data = 1;
+}
+
+message AppDeleteRequest {
+  int64 id = 1;
+}
+
+message AppDeleteReply {}

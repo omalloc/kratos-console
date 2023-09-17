@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/omalloc/kratos-console/api/types"
-	"github.com/omalloc/kratos-console/internal/biz"
-	"github.com/samber/lo"
 	"time"
 
+	"github.com/go-kratos/kratos/v2/log"
+	"github.com/samber/lo"
+
 	pb "github.com/omalloc/kratos-console/api/console/resource"
+	"github.com/omalloc/kratos-console/api/types"
+	"github.com/omalloc/kratos-console/internal/biz"
 )
 
 type NodeService struct {
@@ -49,6 +50,7 @@ func (s *NodeService) List(ctx context.Context, req *pb.NodeListRequest) (*pb.No
 				RegionName: node.RegionName,
 				RegionCode: node.RegionCode,
 				Env:        node.Env,
+				AutoDetect: node.AutoDetect,
 				CreatedAt:  node.CreatedAt.Unix(),
 				UpdatedAt:  node.UpdatedAt.Unix(),
 			}

@@ -21,6 +21,13 @@ service Zone {
     option (google.api.http).get = "/api/console/zone";
   }
 
+  // SimpleList returns a simple-list of zones.
+  //
+  // The list is sorted by zone create time.
+  rpc SimpleList (SimpleListRequest) returns (SimpleListReply) {
+    option (google.api.http).get = "/api/console/zone/simple";
+  }
+
   // Get returns the zone.
   //
   // Query parameter "id" is required.
@@ -99,6 +106,16 @@ message ZoneInfo {
   string created_at = 8;
   // 更新时间
   string updated_at = 9;
+}
+
+// 简单的可用区信息(主要用来枚举展示)
+message SimpleZoneInfo {
+  // 可用区ID
+  int32 id = 1;
+  // 可用区名称
+  string name = 2;
+  // 可用区代码
+  string code = 3;
 }
 
 // 排序
@@ -186,4 +203,11 @@ message DeleteZoneRequest {
 }
 
 message DeleteZoneReply {
+}
+
+
+message SimpleListRequest {
+}
+message SimpleListReply {
+  repeated SimpleZoneInfo data = 1;
 }

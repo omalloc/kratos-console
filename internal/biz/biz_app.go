@@ -2,8 +2,16 @@ package biz
 
 import (
 	"context"
+	"errors"
+
 	"github.com/go-kratos/kratos/v2/log"
+
 	"github.com/omalloc/kratos-console/api/types"
+)
+
+var (
+	ErrAppNotFound  = errors.New("应用不存在")
+	ErrInvalidAppId = errors.New("无效的应用ID")
 )
 
 type Port struct {
@@ -19,6 +27,7 @@ type App struct {
 	Type        int      `json:"type" gorm:"column:type;type:int(11);not null;comment:应用类型(1-系统应用,2-WEB应用,3-API应用,4-子服务,0,5-未定义)"`
 	Ports       []Port   `json:"ports" gorm:"column:ports;type:json;serializer:json;comment:应用预期端口,使用0端口表示随机分配"`
 	Users       []string `json:"users" gorm:"column:users;type:json;serializer:json;comment:应用负责人"`
+	Repos       []string `json:"repos" gorm:"-"`
 	Description string   `json:"description" gorm:"column:description;type:varchar(256);not null;comment:应用描述"`
 	Icon        string   `json:"icon" gorm:"column:icon;type:varchar(256);default null;comment:应用图标"`
 
@@ -27,6 +36,8 @@ type App struct {
 
 type AppRepo interface {
 	List(ctx context.Context, pagination *types.Pagination) ([]*App, error)
+	Create(ctx context.Context, app *App) error
+	Update(ctx context.Context, app *App) error
 }
 
 type AppUsecase struct {
@@ -44,4 +55,12 @@ func NewAppUsecase(logger log.Logger, repo AppRepo) *AppUsecase {
 
 func (uc *AppUsecase) GetAppList(ctx context.Context, pagination *types.Pagination) ([]*App, error) {
 	return uc.repo.List(ctx, pagination)
+}
+
+func (uc *AppUsecase) CreateApp(ctx context.Context, app *App) error {
+	return uc.repo.Create(ctx, app)
+}
+
+func (uc *AppUsecase) UpdateApp(ctx context.Context, app *App) error {
+	return uc.repo.Update(ctx, app)
 }

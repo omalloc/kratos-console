@@ -10,29 +10,29 @@ import "google/api/annotations.proto";
 import "types/pagination.proto";
 
 service Namespace {
-	rpc List (ListRequest) returns (ListReply) {
+	rpc List (NamespaceListRequest) returns (NamespaceListReply) {
 		option (google.api.http).get = "/api/console/namespace";
 	}
 
-	rpc Get (GetRequest) returns (GetReply) {
+	rpc Get (NamespaceGetRequest) returns (NamespaceGetReply) {
 		option (google.api.http).get = "/api/console/namespace/{id}";
-	}
+	} 
 
-	rpc Create (CreateRequest) returns (CreateReply) {
+	rpc Create (NamespaceCreateRequest) returns (NamespaceCreateReply) {
 		option (google.api.http) = {
 			post: "/api/console/namespace";
 			body: "*";
 		};
 	}
 
-	rpc Update (UpdateRequest) returns (UpdateReply) {
+	rpc Update (NamespaceUpdateRequest) returns (NamespaceUpdateReply) {
 		option (google.api.http) = {
 			put: "/api/console/namespace/{id}";
 			body: "*";
 		};
 	}
 
-	rpc Delete (DeleteRequest) returns (DeleteReply) {
+	rpc Delete (NamespaceDeleteRequest) returns (NamespaceDeleteReply) {
 		option (google.api.http).delete = "/api/console/namespace/{id}";
 	}
 }
@@ -46,48 +46,48 @@ message NamespaceInfo {
 	string updated_at = 6;
 }
 
-message ListRequest {
+message NamespaceListRequest {
 	types.Pagination pagination = 1;
 	string name = 2;
 }
 
-message ListReply {
+message NamespaceListReply {
 	types.Pagination pagination = 1;
 	repeated NamespaceInfo data = 2;
 }
 
-message GetRequest {
+message NamespaceGetRequest {
 	string id = 1;
 }
 
-message GetReply {
+message NamespaceGetReply {
 	NamespaceInfo data = 1;
 }
 
-message CreateRequest {
+message NamespaceCreateRequest {
 	string name = 1;
 	string alias = 2;
 	string description = 3;
 }
 
-message CreateReply {
+message NamespaceCreateReply {
 	NamespaceInfo data = 1;
 }
 
-message UpdateRequest {
+message NamespaceUpdateRequest {
 	int64 id = 1;
 	string name = 2;
 	string alias = 3;
 	string description = 4;
 }
 
-message UpdateReply {
+message NamespaceUpdateReply {
 	NamespaceInfo data = 1;
 }
 
-message DeleteRequest {
+message NamespaceDeleteRequest {
 	int64 id = 1;
 }
 
-message DeleteReply {
+message NamespaceDeleteReply {
 }
