@@ -46,7 +46,7 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 	namespaceRepo := data.NewNamespaceRepo(logger, dataData)
 	namespaceUsecase := biz.NewNamespaceUsecase(logger, namespaceRepo)
 	namespaceService := service.NewNamespaceService(logger, namespaceUsecase)
-	registryDiscovery := registry.NewDiscovery(client)
+	registryDiscovery := registry.NewDiscovery(client, protobufRegistry)
 	agentClient, err := discovery.NewAgentService(logger, registryDiscovery)
 	if err != nil {
 		cleanup2()

@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/omalloc/kratos-agent/api/agent"
-	"github.com/samber/lo"
-
 	pb "github.com/omalloc/kratos-console/api/console/discovery"
+	"github.com/samber/lo"
+	"strings"
 )
 
 type DiscoveryService struct {
@@ -30,60 +30,69 @@ func (s *DiscoveryService) OnlineServices(ctx context.Context, req *pb.OnlineSer
 		return nil, err
 	}
 
-	// 根据服务名称分组
-	mapData := lo.GroupBy(reply.Data, func(item *agent.Microservice) string {
-		return item.Name
+	// 根据命名空间分组
+	namespaceMap := lo.GroupBy(reply.Data, func(item *agent.Microservice) string {
+		return item.Namespace
 	})
 
-	result := lo.MapToSlice(mapData, func(key string, value []*agent.Microservice) *pb.ServiceGroup {
-		var (
-			endpoints = make([]string, 0, len(value)*2)
-			clusters  = make([]string, 0, len(value))
-			seen      = make(map[string]struct{}, len(value))
+	result := lo.MapToSlice(namespaceMap, func(namespace string, value []*agent.Microservice) []*pb.ServiceGroup {
+		// 服务名分组
+		svcMap := lo.GroupBy(value, func(item *agent.Microservice) string {
+			return item.Name
+		})
 
-			lastVersion string = ""
-		)
+		return lo.MapToSlice(svcMap, func(name string, items []*agent.Microservice) *pb.ServiceGroup {
+			var (
+				endpoints   = make([]string, 0, len(items)*2)
+				clusters    = make([]string, 0, len(items))
+				seen        = make(map[string]struct{}, len(items))
+				lastKey     = ""
+				lastVersion = ""
+			)
 
-		for _, service := range value {
-			if service.Version != "" {
-				lastVersion = service.Version
-			}
-			endpoints = append(endpoints, service.Endpoints...)
-			if _, ok := seen[service.Cluster]; ok {
-				continue
-			}
-			seen[service.Cluster] = struct{}{}
-			clusters = append(clusters, service.Cluster)
-		}
-
-		return &pb.ServiceGroup{
-			Key:       key,
-			Name:      key,
-			Hostname:  "",
-			Version:   lastVersion,
-			Endpoints: endpoints,
-			Clusters:  clusters,
-			Children: lo.Map(value, func(item *agent.Microservice, _ int) *pb.Service {
-				hang := false
-				if v, ok := item.Metadata["hang"]; ok && v == "true" {
-					hang = true
+			for _, svc := range items {
+				if lastKey == "" {
+					sub := strings.LastIndex(svc.Key, "/")
+					lastKey = svc.Key[0:sub]
 				}
-				return &pb.Service{
-					Key:       item.Key,
-					Name:      key,
-					Hostname:  item.Id,
-					Version:   item.Version,
-					Endpoints: item.Endpoints,
-					Cluster:   item.Cluster,
-					Hang:      hang,
-					Metadata:  item.Metadata,
+				if svc.Version != "" {
+					lastVersion = svc.Version
 				}
-			}),
-		}
+				endpoints = append(endpoints, svc.Endpoints...)
+				if _, ok := seen[svc.Cluster]; ok {
+					continue
+				}
+				seen[svc.Cluster] = struct{}{}
+				clusters = append(clusters, svc.Cluster)
+			}
+
+			return &pb.ServiceGroup{
+				Key:       lastKey,
+				Name:      name,
+				Hostname:  "",
+				Namespace: namespace,
+				Version:   lastVersion,
+				Endpoints: endpoints,
+				Clusters:  clusters,
+				Children: lo.Map(items, func(item *agent.Microservice, _ int) *pb.Service {
+					return &pb.Service{
+						Key:       item.Key,
+						Name:      item.Name,
+						Hostname:  item.Id,
+						Version:   item.Version,
+						Endpoints: item.Endpoints,
+						Cluster:   item.Cluster,
+						Hang:      item.HasHang(),
+						Metadata:  item.Metadata,
+						Namespace: item.Namespace,
+					}
+				}),
+			}
+		})
 	})
 
 	return &pb.OnlineServiceReply{
 		Pagination: nil,
-		Data:       result,
+		Data:       lo.Flatten(result),
 	}, nil
 }

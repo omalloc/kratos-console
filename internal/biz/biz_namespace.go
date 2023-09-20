@@ -2,8 +2,13 @@ package biz
 
 import (
 	"context"
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/omalloc/kratos-console/api/types"
+)
+
+var (
+	ErrInvalidNamespaceID = errors.New(400001, "InvalidNamespaceID", "无效的命名空间")
 )
 
 type Namespace struct {
@@ -21,6 +26,7 @@ func (Namespace) TableName() string {
 
 type NamespaceRepo interface {
 	SelectList(context.Context, *types.Pagination) ([]*Namespace, error)
+	SelectSimpleAll(context.Context) ([]*Namespace, error)
 	SelectOne(context.Context, int) (*Namespace, error)
 	SelectByName(context.Context, string) (*Namespace, error)
 	Create(context.Context, *Namespace) error
@@ -43,4 +49,23 @@ func NewNamespaceUsecase(logger log.Logger, repo NamespaceRepo) *NamespaceUsecas
 
 func (r *NamespaceUsecase) List(ctx context.Context, pagination *types.Pagination) ([]*Namespace, error) {
 	return r.repo.SelectList(ctx, pagination)
+}
+
+func (r *NamespaceUsecase) SimpleList(ctx context.Context) ([]*Namespace, error) {
+	return r.repo.SelectSimpleAll(ctx)
+}
+
+func (r *NamespaceUsecase) Create(ctx context.Context, namespace *Namespace) error {
+	return r.repo.Create(ctx, namespace)
+}
+
+func (r *NamespaceUsecase) Update(ctx context.Context, namespace *Namespace) error {
+	if namespace.ID <= 0 {
+		return ErrInvalidNamespaceID
+	}
+	return r.repo.Update(ctx, namespace)
+}
+
+func (r *NamespaceUsecase) Delete(ctx context.Context, id int64) error {
+	return r.repo.Delete(ctx, int(id))
 }

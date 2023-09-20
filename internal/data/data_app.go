@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
@@ -36,6 +37,23 @@ func (r *appRepo) List(ctx context.Context, pagination *types.Pagination) ([]*bi
 		Scopes(pagination.Paginate()).
 		Count(pagination.Count()).
 		Find(&apps).Error
+	return apps, err
+}
+
+func (r *appRepo) SelectByNamespace(ctx context.Context, namespace string) ([]*biz.NamespaceApp, error) {
+	var (
+		apps []*biz.NamespaceApp
+		err  error
+	)
+
+	tx := r.data.db.WithContext(ctx).Model(&biz.App{}).
+		Select("apps.*, t1.`name` AS namespace_name, t1.alias AS namespace_alias").
+		Joins("LEFT JOIN namespaces AS t1 ON t1.id = apps.namespace_id")
+	if namespace != "" {
+		tx.Where("t1.`name` LIKE ?", fmt.Sprintf("%%%s%%", namespace))
+	}
+
+	err = tx.Find(&apps).Error
 	return apps, err
 }
 

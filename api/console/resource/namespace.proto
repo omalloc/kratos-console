@@ -14,6 +14,10 @@ service Namespace {
 		option (google.api.http).get = "/api/console/namespace";
 	}
 
+	rpc SimpleList (NamespaceSimpleListRequest) returns (NamespaceSimpleListReply) {
+		option (google.api.http).get = "/api/console/namespace/-/options";
+	}
+
 	rpc Get (NamespaceGetRequest) returns (NamespaceGetReply) {
 		option (google.api.http).get = "/api/console/namespace/{id}";
 	} 
@@ -54,6 +58,17 @@ message NamespaceListRequest {
 message NamespaceListReply {
 	types.Pagination pagination = 1;
 	repeated NamespaceInfo data = 2;
+}
+
+message NamespaceSimple {
+	int64 id = 1;
+	string name = 2;
+	string alias = 3;
+}
+message NamespaceSimpleListRequest {
+}
+message NamespaceSimpleListReply {
+	repeated NamespaceSimple data = 1;
 }
 
 message NamespaceGetRequest {

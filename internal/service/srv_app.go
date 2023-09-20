@@ -49,19 +49,41 @@ func (s *AppService) List(ctx context.Context, req *pb.AppListRequest) (*pb.AppL
 						Remark:   item.Remark,
 					}
 				}),
-				Type:      pb.AppInfo_AppType(app.Type),
-				Users:     app.Users,
-				Repos:     []string{},
-				CreatedAt: app.CreatedAt.Unix(),
-				UpdatedAt: app.UpdatedAt.Unix(),
+				Type:        pb.AppInfo_AppType(app.Type),
+				Users:       app.Users,
+				Repos:       []string{},
+				NamespaceId: app.NamespaceID,
+				CreatedAt:   app.CreatedAt.Unix(),
+				UpdatedAt:   app.UpdatedAt.Unix(),
 			}
 		}),
 		Pagination: pagination.Resp(),
 	}, nil
 }
 
+func (s *AppService) NamespaceAppList(ctx context.Context, req *pb.NamespaceAppListRequest) (*pb.NamespaceAppListReply, error) {
+	ret, err := s.app.GetSimpleList(ctx, req.GetName())
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.NamespaceAppListReply{
+		Data: lo.Map(ret, func(item *biz.NamespaceApp, _ int) *pb.NamespaceApp {
+			return &pb.NamespaceApp{
+				Id:             item.ID,
+				Name:           item.Name,
+				Alias:          item.Alias,
+				Type:           pb.AppInfo_AppType(item.Type),
+				NamespaceId:    item.NamespaceID,
+				NamespaceName:  item.NamespaceName,
+				NamespaceAlias: item.NamespaceAlias,
+			}
+		}),
+	}, nil
+}
+
 func (s *AppService) Create(ctx context.Context, req *pb.AppCreateRequest) (*pb.AppCreateReply, error) {
-	data := toData(req.Data)
+	data := s.toData(req.Data)
 	if err := s.app.CreateApp(ctx, data); err != nil {
 		return nil, err
 	}
@@ -72,11 +94,13 @@ func (s *AppService) Create(ctx context.Context, req *pb.AppCreateRequest) (*pb.
 	}, nil
 }
 
-func toData(req *pb.AppInfo) *biz.App {
+func (s *AppService) toData(req *pb.AppInfo) *biz.App {
 	return &biz.App{
 		Name:        req.Name,
 		Alias:       req.Alias,
 		Description: req.Description,
+		Type:        int(req.Type.Number()),
+		NamespaceID: req.NamespaceId,
 		Icon:        req.Icon,
 		Users:       req.Users,
 		Repos:       req.Repos,

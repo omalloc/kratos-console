@@ -14,6 +14,10 @@ service App {
     option (google.api.http).get = "/api/console/app";
   }
 
+  rpc NamespaceAppList (NamespaceAppListRequest) returns (NamespaceAppListReply) {
+    option (google.api.http).get = "/api/console/app/-/metas";
+  }
+
   rpc Get (AppGetRequest) returns (AppGetReply) {
     option (google.api.http).get = "/api/console/app/{id}";
   }
@@ -39,7 +43,7 @@ service App {
 }
 
 message AppInfo {
-  reserved 12,13,14,15;
+  reserved 13,14,15;
 
   // 应用类型：1-系统应用,2-WEB应用,3-API应用,4-子服务,0,5-未定义
   enum AppType {
@@ -82,14 +86,16 @@ message AppInfo {
   repeated AppPort ports = 6;
   // 应用类型
   AppType type = 7;
+  // 命名空间id
+  int64 namespace_id = 8;
   // 应用负责人
-  repeated string users = 8;
+  repeated string users = 9;
   // 应用仓库
-  repeated string repos = 9;
+  repeated string repos = 10;
   // 创建时间
-  int64 created_at = 10;
+  int64 created_at = 11;
   // 修改时间
-  int64 updated_at = 11;
+  int64 updated_at = 12;
 }
 
 message AppListRequest {
@@ -99,6 +105,24 @@ message AppListRequest {
 message AppListReply {
   types.Pagination pagination = 1;
   repeated AppInfo data = 2;
+}
+
+message NamespaceAppListRequest {
+  optional string name = 1;
+}
+
+message NamespaceApp {
+  int64 id = 1;
+  string name = 2;
+  string alias = 3;
+  AppInfo.AppType type = 4; // 应用类型
+  int64 namespace_id = 5;
+  string namespace_name = 6;
+  string namespace_alias = 7;
+}
+
+message NamespaceAppListReply {
+  repeated NamespaceApp data = 1;
 }
 
 message AppGetRequest {

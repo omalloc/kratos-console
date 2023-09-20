@@ -7,7 +7,7 @@ require (
 	github.com/go-kratos/swagger-api v1.0.1
 	github.com/google/gnostic v0.6.9
 	github.com/google/wire v0.5.0
-	github.com/omalloc/contrib v1.0.5
+	github.com/omalloc/contrib v1.0.6
 	github.com/samber/lo v1.38.1
 	github.com/spf13/cobra v1.7.0
 	go.uber.org/automaxprocs v1.5.1

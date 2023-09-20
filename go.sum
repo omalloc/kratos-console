@@ -254,6 +254,8 @@ github.com/omalloc/contrib v1.0.4 h1:WYFULq3pgm6hQKao5tlJYTCLgIuMjl5l5xjkO4x9k8c
 github.com/omalloc/contrib v1.0.4/go.mod h1:isL8iD0Zl5KW4HS7d8dg2p4+o/FOirr6i8hLJxDyvVU=
 github.com/omalloc/contrib v1.0.5 h1:JBwcVXuQ7Y0QsQF6MN0LZzgywBoT35tUCy/B2hmwPzQ=
 github.com/omalloc/contrib v1.0.5/go.mod h1:isL8iD0Zl5KW4HS7d8dg2p4+o/FOirr6i8hLJxDyvVU=
+github.com/omalloc/contrib v1.0.6 h1:bxGXfsSCqaKOyxMHSqHgLORl5a/Bcv9izERxpLF6rC4=
+github.com/omalloc/contrib v1.0.6/go.mod h1:isL8iD0Zl5KW4HS7d8dg2p4+o/FOirr6i8hLJxDyvVU=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=

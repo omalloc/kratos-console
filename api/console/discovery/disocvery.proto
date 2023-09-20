@@ -32,6 +32,8 @@ message Service {
 	bool hang = 7;
 	// 元信息
 	map<string, string> metadata = 8;
+	// 命名空间
+	string namespace = 9;
 }
 
 message ServiceGroup {
@@ -49,6 +51,8 @@ message ServiceGroup {
 	repeated string clusters = 6;
   // 同服务，不同实例的数组信息
 	repeated Service children = 7;
+	// 命名空间
+	string namespace = 8;
 }
 
 message OnlineServiceRequest {

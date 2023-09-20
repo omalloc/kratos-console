@@ -26,6 +26,18 @@ func (r *namespaceRepo) SelectList(ctx context.Context, pagination *types.Pagina
 	return ret, err
 }
 
+func (r *namespaceRepo) SelectSimpleAll(ctx context.Context) ([]*biz.Namespace, error) {
+	var (
+		ret []*biz.Namespace
+		err error
+	)
+
+	err = r.data.db.WithContext(ctx).Model(&biz.Namespace{}).
+		Select("id, `name`, alias").
+		Find(&ret).Error
+	return ret, err
+}
+
 func (r *namespaceRepo) SelectOne(ctx context.Context, i int) (*biz.Namespace, error) {
 	var (
 		ret *biz.Namespace
@@ -58,6 +70,7 @@ func (r *namespaceRepo) Create(ctx context.Context, namespace *biz.Namespace) er
 func (r *namespaceRepo) Update(ctx context.Context, namespace *biz.Namespace) error {
 	return r.data.db.WithContext(ctx).Model(&biz.Namespace{}).
 		Omit("id").
+		Where("id = ?", namespace.ID).
 		Updates(namespace).Error
 }
 

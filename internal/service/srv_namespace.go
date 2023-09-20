@@ -47,15 +47,62 @@ func (s *NamespaceService) List(ctx context.Context, req *pb.NamespaceListReques
 		}),
 	}, nil
 }
+
+func (s *NamespaceService) SimpleList(ctx context.Context, _ *pb.NamespaceSimpleListRequest) (*pb.NamespaceSimpleListReply, error) {
+	data, err := s.usecase.SimpleList(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.NamespaceSimpleListReply{
+		Data: lo.Map(data, func(item *biz.Namespace, _ int) *pb.NamespaceSimple {
+			return &pb.NamespaceSimple{
+				Id:    item.ID,
+				Name:  item.Name,
+				Alias: item.Alias,
+			}
+		}),
+	}, nil
+}
+
 func (s *NamespaceService) Get(ctx context.Context, req *pb.NamespaceGetRequest) (*pb.NamespaceGetReply, error) {
 	return &pb.NamespaceGetReply{}, nil
 }
 func (s *NamespaceService) Create(ctx context.Context, req *pb.NamespaceCreateRequest) (*pb.NamespaceCreateReply, error) {
-	return &pb.NamespaceCreateReply{}, nil
+	m := &biz.Namespace{
+		Name:        req.Name,
+		Alias:       req.Name,
+		Description: req.Description,
+	}
+	err := s.usecase.Create(ctx, m)
+	return &pb.NamespaceCreateReply{
+		Data: s.toData(m),
+	}, err
 }
 func (s *NamespaceService) Update(ctx context.Context, req *pb.NamespaceUpdateRequest) (*pb.NamespaceUpdateReply, error) {
-	return &pb.NamespaceUpdateReply{}, nil
+	m := &biz.Namespace{
+		ID:          req.Id,
+		Name:        req.Name,
+		Alias:       req.Alias,
+		Description: req.Description,
+	}
+	err := s.usecase.Update(ctx, m)
+
+	return &pb.NamespaceUpdateReply{
+		Data: s.toData(m),
+	}, err
 }
 func (s *NamespaceService) Delete(ctx context.Context, req *pb.NamespaceDeleteRequest) (*pb.NamespaceDeleteReply, error) {
-	return &pb.NamespaceDeleteReply{}, nil
+	err := s.usecase.Delete(ctx, req.Id)
+	return &pb.NamespaceDeleteReply{}, err
+}
+
+func (s *NamespaceService) toData(m *biz.Namespace) *pb.NamespaceInfo {
+	return &pb.NamespaceInfo{
+		Id:          m.ID,
+		Name:        m.Name,
+		Alias:       m.Alias,
+		Description: m.Description,
+		CreatedAt:   m.CreatedAt.Format(time.DateTime),
+		UpdatedAt:   m.UpdatedAt.Format(time.DateTime),
+	}
 }
