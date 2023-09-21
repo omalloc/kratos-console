@@ -7,9 +7,11 @@ require (
 	github.com/go-kratos/swagger-api v1.0.1
 	github.com/google/gnostic v0.6.9
 	github.com/google/wire v0.5.0
-	github.com/omalloc/contrib v1.0.6
+	github.com/omalloc/contrib v1.0.6-1
+	github.com/omalloc/kratos-agent v0.0.0-20230920050032-e2d370f423a1
 	github.com/samber/lo v1.38.1
 	github.com/spf13/cobra v1.7.0
+	go.etcd.io/etcd/client/v3 v3.5.9
 	go.uber.org/automaxprocs v1.5.1
 	google.golang.org/genproto v0.0.0-20220524023933-508584e28198
 	google.golang.org/grpc v1.50.1
@@ -41,12 +43,10 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/kr/text v0.2.0 // indirect
 	github.com/rakyll/statik v0.1.7 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.9 // indirect
-	go.etcd.io/etcd/client/v3 v3.5.9 // indirect
 	go.opentelemetry.io/contrib v1.17.0 // indirect
 	go.opentelemetry.io/otel v1.16.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.16.0 // indirect

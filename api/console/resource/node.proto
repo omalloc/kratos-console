@@ -7,7 +7,7 @@ option java_multiple_files = true;
 option java_package = "api.console.resource";
 
 import "google/api/annotations.proto";
-import "types/pagination.proto";
+import "protobuf/pagination.proto";
 
 // 节点服务
 //
@@ -82,11 +82,11 @@ message NodeInfo {
 }
 
 message NodeListRequest {
-    types.Pagination pagination = 1;
+    protobuf.Pagination pagination = 1;
 }
 
 message NodeListReply {
-    types.Pagination pagination = 1;
+    protobuf.Pagination pagination = 1;
     repeated NodeInfo data = 2;
 }
 

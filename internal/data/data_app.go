@@ -3,8 +3,8 @@ package data
 import (
 	"context"
 	"fmt"
+	"github.com/omalloc/contrib/protobuf"
 
-	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -29,7 +29,7 @@ func (r *appRepo) Update(ctx context.Context, app *biz.App) error {
 		Updates(&app).Error
 }
 
-func (r *appRepo) List(ctx context.Context, pagination *types.Pagination) ([]*biz.App, error) {
+func (r *appRepo) List(ctx context.Context, pagination *protobuf.Pagination) ([]*biz.App, error) {
 	var (
 		apps []*biz.App
 	)

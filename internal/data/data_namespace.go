@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/omalloc/kratos-console/api/types"
+	"github.com/omalloc/contrib/protobuf"
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -13,7 +13,7 @@ type namespaceRepo struct {
 	data *Data
 }
 
-func (r *namespaceRepo) SelectList(ctx context.Context, pagination *types.Pagination) ([]*biz.Namespace, error) {
+func (r *namespaceRepo) SelectList(ctx context.Context, pagination *protobuf.Pagination) ([]*biz.Namespace, error) {
 	var (
 		ret []*biz.Namespace
 		err error

@@ -3,11 +3,12 @@ package biz
 import (
 	"context"
 	"errors"
+	"github.com/omalloc/contrib/protobuf"
 
 	"github.com/go-kratos/kratos/v2/log"
 
+	"github.com/omalloc/contrib/kratos/orm"
 	pb "github.com/omalloc/kratos-console/api/console/resource"
-	"github.com/omalloc/kratos-console/api/types"
 )
 
 var (
@@ -22,7 +23,7 @@ type Node struct {
 	Env        string `json:"env" gorm:"column:env;type:varchar(12);"`
 	AutoDetect bool   `json:"auto_detect" gorm:"column:auto_detect;type:tinyint(1);default:0;"`
 
-	types.DBModel
+	orm.DBModel
 }
 
 type NodeInfo struct {
@@ -37,7 +38,7 @@ type NodeInfo struct {
 }
 
 type NodeRepo interface {
-	List(ctx context.Context, pagination *types.Pagination) ([]*NodeInfo, error)
+	List(ctx context.Context, pagination *protobuf.Pagination) ([]*NodeInfo, error)
 	Create(ctx context.Context, node *Node) error
 	Update(ctx context.Context, node *Node) error
 }
@@ -54,7 +55,7 @@ func NewNodeUsecase(logger log.Logger, repo NodeRepo) *NodeUsecase {
 	}
 }
 
-func (uc *NodeUsecase) GetNodeList(ctx context.Context, pagination *types.Pagination) ([]*NodeInfo, error) {
+func (uc *NodeUsecase) GetNodeList(ctx context.Context, pagination *protobuf.Pagination) ([]*NodeInfo, error) {
 	return uc.repo.List(ctx, pagination)
 }
 

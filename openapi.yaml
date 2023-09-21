@@ -578,7 +578,7 @@ components:
             type: object
             properties:
                 pagination:
-                    $ref: '#/components/schemas/api.types.Pagination'
+                    $ref: '#/components/schemas/protobuf.Pagination'
                 data:
                     type: array
                     items:
@@ -746,7 +746,7 @@ components:
             type: object
             properties:
                 pagination:
-                    $ref: '#/components/schemas/api.types.Pagination'
+                    $ref: '#/components/schemas/protobuf.Pagination'
                 data:
                     type: array
                     items:
@@ -829,7 +829,7 @@ components:
             type: object
             properties:
                 pagination:
-                    $ref: '#/components/schemas/api.types.Pagination'
+                    $ref: '#/components/schemas/protobuf.Pagination'
                 data:
                     type: array
                     items:
@@ -909,7 +909,7 @@ components:
             type: object
             properties:
                 pagination:
-                    $ref: '#/components/schemas/api.types.Pagination'
+                    $ref: '#/components/schemas/protobuf.Pagination'
                 data:
                     type: array
                     items:
@@ -997,7 +997,7 @@ components:
             type: object
             properties:
                 pagination:
-                    $ref: '#/components/schemas/api.types.Pagination'
+                    $ref: '#/components/schemas/protobuf.Pagination'
                 data:
                     type: array
                     items:
@@ -1108,7 +1108,7 @@ components:
                     type: string
                     description: 更新时间
             description: 可用区
-        api.types.Pagination:
+        protobuf.Pagination:
             type: object
             properties:
                 current:

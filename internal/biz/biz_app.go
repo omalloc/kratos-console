@@ -3,10 +3,10 @@ package biz
 import (
 	"context"
 	"errors"
+	"github.com/omalloc/contrib/kratos/orm"
+	"github.com/omalloc/contrib/protobuf"
 
 	"github.com/go-kratos/kratos/v2/log"
-
-	"github.com/omalloc/kratos-console/api/types"
 )
 
 var (
@@ -32,7 +32,7 @@ type App struct {
 	Description string   `json:"description" gorm:"column:description;type:varchar(256);comment:应用描述"`
 	Icon        string   `json:"icon" gorm:"column:icon;type:varchar(256);default null;comment:应用图标"`
 
-	types.DBModel
+	orm.DBModel
 }
 
 type NamespaceApp struct {
@@ -43,7 +43,7 @@ type NamespaceApp struct {
 }
 
 type AppRepo interface {
-	List(ctx context.Context, pagination *types.Pagination) ([]*App, error)
+	List(ctx context.Context, pagination *protobuf.Pagination) ([]*App, error)
 	SelectByNamespace(context.Context, string) ([]*NamespaceApp, error)
 	Create(ctx context.Context, app *App) error
 	Update(ctx context.Context, app *App) error
@@ -62,7 +62,7 @@ func NewAppUsecase(logger log.Logger, repo AppRepo) *AppUsecase {
 	}
 }
 
-func (uc *AppUsecase) GetAppList(ctx context.Context, pagination *types.Pagination) ([]*App, error) {
+func (uc *AppUsecase) GetAppList(ctx context.Context, pagination *protobuf.Pagination) ([]*App, error) {
 	return uc.repo.List(ctx, pagination)
 }
 

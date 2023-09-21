@@ -2,13 +2,13 @@ package service
 
 import (
 	"context"
+	"github.com/omalloc/contrib/protobuf"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/samber/lo"
 
 	pb "github.com/omalloc/kratos-console/api/console/resource"
-	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -27,7 +27,7 @@ func NewNamespaceService(logger log.Logger, usecase *biz.NamespaceUsecase) *Name
 }
 
 func (s *NamespaceService) List(ctx context.Context, req *pb.NamespaceListRequest) (*pb.NamespaceListReply, error) {
-	wrap := types.Wrap(req.Pagination)
+	wrap := protobuf.PageWrap(req.Pagination)
 	ret, err := s.usecase.List(ctx, wrap)
 	if err != nil {
 		return nil, err

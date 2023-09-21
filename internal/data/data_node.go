@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"github.com/omalloc/kratos-console/api/types"
+	"github.com/omalloc/contrib/protobuf"
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -29,7 +29,7 @@ func (r *nodeRepo) Update(ctx context.Context, node *biz.Node) error {
 		Error
 }
 
-func (r *nodeRepo) List(ctx context.Context, pagination *types.Pagination) ([]*biz.NodeInfo, error) {
+func (r *nodeRepo) List(ctx context.Context, pagination *protobuf.Pagination) ([]*biz.NodeInfo, error) {
 	var nodes []*biz.NodeInfo
 	err := r.data.db.WithContext(ctx).
 		Model(&biz.Node{}).

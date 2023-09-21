@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/omalloc/contrib/protobuf"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -9,7 +10,6 @@ import (
 	"github.com/samber/lo"
 
 	pb "github.com/omalloc/kratos-console/api/console/resource"
-	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -28,7 +28,7 @@ func NewZoneService(logger log.Logger, zone *biz.ZoneUsecase) *ZoneService {
 }
 
 func (s *ZoneService) List(ctx context.Context, req *pb.GetZoneListRequest) (*pb.GetZoneListReply, error) {
-	pagination := types.Wrap(req.Pagination)
+	pagination := protobuf.PageWrap(req.Pagination)
 	data, err := s.zone.GetZoneList(ctx, &biz.ZoneQuery{
 		Pagination: pagination,
 		Env:        req.Env,

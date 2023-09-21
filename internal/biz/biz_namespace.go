@@ -4,7 +4,8 @@ import (
 	"context"
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/omalloc/kratos-console/api/types"
+	"github.com/omalloc/contrib/kratos/orm"
+	"github.com/omalloc/contrib/protobuf"
 )
 
 var (
@@ -17,7 +18,7 @@ type Namespace struct {
 	Alias       string `json:"alias" gorm:"column:alias;type:varchar(32);comment:命名空间别称"`
 	Description string `json:"description" gorm:"column:description;type:varchar(128);comment:命名空间描述"`
 
-	types.DBModel
+	orm.DBModel
 }
 
 func (Namespace) TableName() string {
@@ -25,7 +26,7 @@ func (Namespace) TableName() string {
 }
 
 type NamespaceRepo interface {
-	SelectList(context.Context, *types.Pagination) ([]*Namespace, error)
+	SelectList(context.Context, *protobuf.Pagination) ([]*Namespace, error)
 	SelectSimpleAll(context.Context) ([]*Namespace, error)
 	SelectOne(context.Context, int) (*Namespace, error)
 	SelectByName(context.Context, string) (*Namespace, error)
@@ -47,7 +48,7 @@ func NewNamespaceUsecase(logger log.Logger, repo NamespaceRepo) *NamespaceUsecas
 	}
 }
 
-func (r *NamespaceUsecase) List(ctx context.Context, pagination *types.Pagination) ([]*Namespace, error) {
+func (r *NamespaceUsecase) List(ctx context.Context, pagination *protobuf.Pagination) ([]*Namespace, error) {
 	return r.repo.SelectList(ctx, pagination)
 }
 

@@ -55,7 +55,9 @@ func newApp(logger log.Logger, registrar registry.Registrar, gs *grpc.Server, hs
 		kratos.ID(id),
 		kratos.Name(Name),
 		kratos.Version(Version),
-		kratos.Metadata(map[string]string{}),
+		kratos.Metadata(map[string]string{
+			"hang": "true",
+		}),
 		kratos.Logger(logger),
 		kratos.Registrar(registrar),
 		kratos.Server(

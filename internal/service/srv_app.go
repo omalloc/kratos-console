@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
+	"github.com/omalloc/contrib/protobuf"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/samber/lo"
 
 	pb "github.com/omalloc/kratos-console/api/console/resource"
-	"github.com/omalloc/kratos-console/api/types"
 	"github.com/omalloc/kratos-console/internal/biz"
 )
 
@@ -28,7 +28,7 @@ func NewAppService(logger log.Logger, app *biz.AppUsecase) *AppService {
 }
 
 func (s *AppService) List(ctx context.Context, req *pb.AppListRequest) (*pb.AppListReply, error) {
-	pagination := types.Wrap(req.Pagination)
+	pagination := protobuf.PageWrap(req.Pagination)
 	apps, err := s.app.GetAppList(ctx, pagination)
 	if err != nil {
 		return nil, err

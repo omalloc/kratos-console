@@ -40,7 +40,6 @@ init:
 config:
 	protoc --proto_path=./internal \
 		--proto_path=./third_party \
-		--proto_path=./third_party \
 		--proto_path=$(REMOTE_PROTO_FILES) \
 		--go_out=paths=source_relative:./internal \
 		$(INTERNAL_PROTO_FILES)
@@ -50,6 +49,7 @@ config:
 api:
 	protoc --proto_path=./api \
 		--proto_path=./third_party \
+		--proto_path=$(REMOTE_PROTO_FILES) \
 		--go_out=paths=source_relative:./api \
 		--go-errors_out=paths=source_relative:. \
 		--go-http_out=paths=source_relative:./api \

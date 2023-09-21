@@ -7,7 +7,7 @@ option java_multiple_files = true;
 option java_package = "api.console.resource";
 
 import "google/api/annotations.proto";
-import "types/pagination.proto";
+import "protobuf/pagination.proto";
 
 service Namespace {
 	rpc List (NamespaceListRequest) returns (NamespaceListReply) {
@@ -51,12 +51,12 @@ message NamespaceInfo {
 }
 
 message NamespaceListRequest {
-	types.Pagination pagination = 1;
+	protobuf.Pagination pagination = 1;
 	string name = 2;
 }
 
 message NamespaceListReply {
-	types.Pagination pagination = 1;
+	protobuf.Pagination pagination = 1;
 	repeated NamespaceInfo data = 2;
 }
 

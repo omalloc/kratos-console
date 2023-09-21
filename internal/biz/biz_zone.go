@@ -2,11 +2,12 @@ package biz
 
 import (
 	"context"
+	"github.com/omalloc/contrib/protobuf"
+	pb "github.com/omalloc/kratos-console/api/console/resource"
 
 	"github.com/go-kratos/kratos/v2/log"
 
-	pb "github.com/omalloc/kratos-console/api/console/resource"
-	"github.com/omalloc/kratos-console/api/types"
+	"github.com/omalloc/contrib/kratos/orm"
 )
 
 type EnvType string
@@ -19,7 +20,7 @@ const (
 )
 
 type ZoneQuery struct {
-	*types.Pagination
+	*protobuf.Pagination
 
 	Env string `json:"env"`
 }
@@ -33,7 +34,7 @@ type Zone struct {
 	Env        string `json:"env" gorm:"column:env;type:varchar(12);comment:环境变量dev,test,qa,prod,etc.."`
 	Status     int    `json:"status" gorm:"column:status;type:tinyint(1);default:1;comment:1=正常,2=禁用"`
 
-	types.DBModel
+	orm.DBModel
 }
 
 type ZoneRepo interface {

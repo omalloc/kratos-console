@@ -5,6 +5,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/omalloc/kratos-agent/api/agent"
 	pb "github.com/omalloc/kratos-console/api/console/discovery"
+	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/samber/lo"
 	"strings"
 )
@@ -12,18 +13,24 @@ import (
 type DiscoveryService struct {
 	pb.UnimplementedDiscoveryServer
 
-	log    *log.Helper
-	client agent.AgentClient
+	log        *log.Helper
+	client     agent.AgentClient
+	appruntime *biz.AppRuntimeUsecase
 }
 
-func NewDiscoveryService(logger log.Logger, client agent.AgentClient) *DiscoveryService {
+func NewDiscoveryService(logger log.Logger, client agent.AgentClient, appruntime *biz.AppRuntimeUsecase) *DiscoveryService {
 	return &DiscoveryService{
-		log:    log.NewHelper(logger),
-		client: client,
+		log:        log.NewHelper(logger),
+		client:     client,
+		appruntime: appruntime,
 	}
 }
 
 func (s *DiscoveryService) OnlineServices(ctx context.Context, req *pb.OnlineServiceRequest) (*pb.OnlineServiceReply, error) {
+	if err := s.appruntime.Test(ctx); err != nil {
+		return nil, err
+	}
+
 	// 获取全部在线服务
 	reply, err := s.client.ListService(ctx, &agent.ListServiceRequest{})
 	if err != nil {

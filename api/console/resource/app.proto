@@ -7,7 +7,7 @@ option java_multiple_files = true;
 option java_package = "api.console.resource";
 
 import "google/api/annotations.proto";
-import "types/pagination.proto";
+import "protobuf/pagination.proto";
 
 service App {
   rpc List (AppListRequest) returns (AppListReply) {
@@ -99,11 +99,11 @@ message AppInfo {
 }
 
 message AppListRequest {
-  types.Pagination pagination = 1;
+  protobuf.Pagination pagination = 1;
 }
 
 message AppListReply {
-  types.Pagination pagination = 1;
+  protobuf.Pagination pagination = 1;
   repeated AppInfo data = 2;
 }
 

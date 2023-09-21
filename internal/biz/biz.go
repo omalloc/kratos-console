@@ -8,4 +8,5 @@ var ProviderSet = wire.NewSet(
 	NewNodeUsecase,
 	NewAppUsecase,
 	NewNamespaceUsecase,
+	NewAppRuntimeUsecase,
 )

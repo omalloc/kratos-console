@@ -20,6 +20,7 @@ var ProviderSet = wire.NewSet(
 	NewNodeRepo,
 	NewAppRepo,
 	NewNamespaceRepo,
+	NewAppRuntimeRepo,
 )
 
 var (

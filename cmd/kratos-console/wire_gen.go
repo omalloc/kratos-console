@@ -53,7 +53,9 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 		cleanup()
 		return nil, nil, err
 	}
-	discoveryService := service.NewDiscoveryService(logger, agentClient)
+	appRuntimeRepo := data.NewAppRuntimeRepo(dataData)
+	appRuntimeUsecase := biz.NewAppRuntimeUsecase(logger, appRuntimeRepo)
+	discoveryService := service.NewDiscoveryService(logger, agentClient, appRuntimeUsecase)
 	grpcServer := server.NewGRPCServer(confServer, logger, zoneService, nodeService, appService, namespaceService, discoveryService)
 	httpServer := server.NewHTTPServer(confServer, logger, zoneService, nodeService, appService, namespaceService, discoveryService)
 	v := server.NewChecker(dataData, client)
