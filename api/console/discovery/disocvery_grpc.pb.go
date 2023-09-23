@@ -20,6 +20,9 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Discovery_OnlineServices_FullMethodName = "/api.console.discovery.Discovery/OnlineServices"
+	Discovery_KVListClusters_FullMethodName = "/api.console.discovery.Discovery/KVListClusters"
+	Discovery_KVListKeys_FullMethodName     = "/api.console.discovery.Discovery/KVListKeys"
+	Discovery_KVGetValue_FullMethodName     = "/api.console.discovery.Discovery/KVGetValue"
 )
 
 // DiscoveryClient is the client API for Discovery service.
@@ -27,6 +30,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DiscoveryClient interface {
 	OnlineServices(ctx context.Context, in *OnlineServiceRequest, opts ...grpc.CallOption) (*OnlineServiceReply, error)
+	KVListClusters(ctx context.Context, in *KVListClustersRequest, opts ...grpc.CallOption) (*KVListClustersReply, error)
+	KVListKeys(ctx context.Context, in *KVListKeysRequest, opts ...grpc.CallOption) (*KVListKeysReply, error)
+	KVGetValue(ctx context.Context, in *KVGetValueRequest, opts ...grpc.CallOption) (*KVGetValueReply, error)
 }
 
 type discoveryClient struct {
@@ -46,11 +52,41 @@ func (c *discoveryClient) OnlineServices(ctx context.Context, in *OnlineServiceR
 	return out, nil
 }
 
+func (c *discoveryClient) KVListClusters(ctx context.Context, in *KVListClustersRequest, opts ...grpc.CallOption) (*KVListClustersReply, error) {
+	out := new(KVListClustersReply)
+	err := c.cc.Invoke(ctx, Discovery_KVListClusters_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *discoveryClient) KVListKeys(ctx context.Context, in *KVListKeysRequest, opts ...grpc.CallOption) (*KVListKeysReply, error) {
+	out := new(KVListKeysReply)
+	err := c.cc.Invoke(ctx, Discovery_KVListKeys_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *discoveryClient) KVGetValue(ctx context.Context, in *KVGetValueRequest, opts ...grpc.CallOption) (*KVGetValueReply, error) {
+	out := new(KVGetValueReply)
+	err := c.cc.Invoke(ctx, Discovery_KVGetValue_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DiscoveryServer is the server API for Discovery service.
 // All implementations must embed UnimplementedDiscoveryServer
 // for forward compatibility
 type DiscoveryServer interface {
 	OnlineServices(context.Context, *OnlineServiceRequest) (*OnlineServiceReply, error)
+	KVListClusters(context.Context, *KVListClustersRequest) (*KVListClustersReply, error)
+	KVListKeys(context.Context, *KVListKeysRequest) (*KVListKeysReply, error)
+	KVGetValue(context.Context, *KVGetValueRequest) (*KVGetValueReply, error)
 	mustEmbedUnimplementedDiscoveryServer()
 }
 
@@ -60,6 +96,15 @@ type UnimplementedDiscoveryServer struct {
 
 func (UnimplementedDiscoveryServer) OnlineServices(context.Context, *OnlineServiceRequest) (*OnlineServiceReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OnlineServices not implemented")
+}
+func (UnimplementedDiscoveryServer) KVListClusters(context.Context, *KVListClustersRequest) (*KVListClustersReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KVListClusters not implemented")
+}
+func (UnimplementedDiscoveryServer) KVListKeys(context.Context, *KVListKeysRequest) (*KVListKeysReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KVListKeys not implemented")
+}
+func (UnimplementedDiscoveryServer) KVGetValue(context.Context, *KVGetValueRequest) (*KVGetValueReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KVGetValue not implemented")
 }
 func (UnimplementedDiscoveryServer) mustEmbedUnimplementedDiscoveryServer() {}
 
@@ -92,6 +137,60 @@ func _Discovery_OnlineServices_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Discovery_KVListClusters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KVListClustersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiscoveryServer).KVListClusters(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Discovery_KVListClusters_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiscoveryServer).KVListClusters(ctx, req.(*KVListClustersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Discovery_KVListKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KVListKeysRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiscoveryServer).KVListKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Discovery_KVListKeys_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiscoveryServer).KVListKeys(ctx, req.(*KVListKeysRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Discovery_KVGetValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KVGetValueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiscoveryServer).KVGetValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Discovery_KVGetValue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiscoveryServer).KVGetValue(ctx, req.(*KVGetValueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Discovery_ServiceDesc is the grpc.ServiceDesc for Discovery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +201,18 @@ var Discovery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OnlineServices",
 			Handler:    _Discovery_OnlineServices_Handler,
+		},
+		{
+			MethodName: "KVListClusters",
+			Handler:    _Discovery_KVListClusters_Handler,
+		},
+		{
+			MethodName: "KVListKeys",
+			Handler:    _Discovery_KVListKeys_Handler,
+		},
+		{
+			MethodName: "KVGetValue",
+			Handler:    _Discovery_KVGetValue_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

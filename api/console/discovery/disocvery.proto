@@ -13,6 +13,19 @@ service Discovery {
 	rpc OnlineServices (OnlineServiceRequest) returns (OnlineServiceReply) {
 		option (google.api.http).get = "/api/console/discovery/services/-/online";
 	};
+
+	rpc KVListClusters (KVListClustersRequest) returns (KVListClustersReply) {
+		option (google.api.http).get = "/api/console/kv/clusters";
+	};
+
+	rpc KVListKeys (KVListKeysRequest) returns (KVListKeysReply) {
+		option (google.api.http).get = "/api/console/kv/keys";
+	};
+
+	rpc KVGetValue (KVGetValueRequest) returns (KVGetValueReply) {
+		option (google.api.http).get = "/api/console/kv/-/value";
+	};
+
 }
 
 message Service {
@@ -67,3 +80,23 @@ message OnlineServiceReply {
 		protobuf.Pagination pagination = 1;
 		repeated ServiceGroup data = 2;
 };
+
+message KVListClustersRequest {}
+message KVListClustersReply {
+	repeated string clusters = 1;
+}
+
+message KVListKeysRequest {
+	string cluster = 1;
+}
+message KVListKeysReply {
+	repeated string keys = 1;
+}
+
+message KVGetValueRequest {
+	string key = 1;
+	string cluster = 2;
+}
+message KVGetValueReply {
+	string value = 1;
+}

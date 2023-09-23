@@ -47,7 +47,6 @@ func (s *TaskServer) run() {
 	for {
 		select {
 		case <-ticker.C:
-			s.log.Infof("[TASK] fetch discovery services.")
 			if err := s.flushed(); err != nil {
 				continue
 			}
@@ -58,7 +57,7 @@ func (s *TaskServer) run() {
 }
 
 func (s *TaskServer) flushed() error {
-	ctx, span := s.tracer.Start(context.Background(), "/cron/DiscoveryServicesFlusher", propagation.MapCarrier{})
+	ctx, span := s.tracer.Start(context.Background(), "/cron/sync.agent.discovery/Services", propagation.MapCarrier{})
 	defer func() {
 		s.tracer.End(ctx, span, nil, nil)
 	}()
@@ -70,7 +69,6 @@ func (s *TaskServer) flushed() error {
 		return err
 	}
 	if err = s.usecase.Updates(ctx, reply.Data); err != nil {
-		cancel()
 		s.log.Infof("[TASK] fetch discovery services failed: %v", err)
 		return err
 	}

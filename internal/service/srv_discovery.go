@@ -137,3 +137,40 @@ func (s *DiscoveryService) OnlineServices(ctx context.Context, req *pb.OnlineSer
 			Data:       lo.Flatten(result),
 		}, nil*/
 }
+
+func (s *DiscoveryService) KVListClusters(ctx context.Context, req *pb.KVListClustersRequest) (*pb.KVListClustersReply, error) {
+	reply, err := s.client.ListCluster(ctx, &agent.ListClusterRequest{})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.KVListClustersReply{
+		Clusters: lo.Map(reply.Data, func(item *agent.Cluster, _ int) string {
+			return item.Name
+		}),
+	}, nil
+}
+
+func (s *DiscoveryService) KVListKeys(ctx context.Context, req *pb.KVListKeysRequest) (*pb.KVListKeysReply, error) {
+	reply, err := s.client.ListKey(ctx, &agent.ListKeyRequest{
+		Cluster: req.Cluster,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.KVListKeysReply{
+		Keys: reply.Keys,
+	}, nil
+}
+
+func (s *DiscoveryService) KVGetValue(ctx context.Context, req *pb.KVGetValueRequest) (*pb.KVGetValueReply, error) {
+	reply, err := s.client.GetKey(ctx, &agent.GetKeyRequest{
+		Key:     req.Key,
+		Cluster: req.Cluster,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.KVGetValueReply{
+		Value: reply.Value,
+	}, nil
+}

@@ -8,7 +8,7 @@ require (
 	github.com/google/gnostic v0.6.9
 	github.com/google/wire v0.5.0
 	github.com/omalloc/contrib v1.0.6-1
-	github.com/omalloc/kratos-agent v0.0.0-20230920050032-e2d370f423a1
+	github.com/omalloc/kratos-agent v0.0.0-20230923075604-1beb183e4726
 	github.com/samber/lo v1.38.1
 	github.com/spf13/cobra v1.7.0
 	go.etcd.io/etcd/client/v3 v3.5.9
