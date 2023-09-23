@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/omalloc/contrib/kratos/orm"
 	"github.com/omalloc/contrib/kratos/orm/crud"
@@ -11,13 +12,13 @@ import (
 
 type AppRuntime struct {
 	ID        int64             `json:"id" gorm:"column:id;primaryKey;autoIncrement;comment:主键ID"`
-	Name      string            `json:"name" gorm:"column:name;type:varchar(64);not null;comment:应用名称"`
+	Name      string            `json:"name" gorm:"column:name;type:varchar(64);not null;uniqueIndex:uk_name_cluster;comment:应用名称"`
 	Hostname  string            `json:"hostname" gorm:"column:hostname;type:varchar(64);not null;comment:服务主机"`
 	Key       string            `json:"key" gorm:"column:key;type:varchar(128);not null;comment:服务唯一KEY(/命名空间/服务名/服务主机)"`
 	Version   string            `json:"version" gorm:"column:version;type:varchar(32);null;comment:服务运行版本"`
 	Endpoints []string          `json:"endpoints" gorm:"column:endpoints;type:json;serializer:json;not null;comment:服务注册端点([]scheme://IP:Port)"`
 	Metadata  map[string]string `json:"metadata" gorm:"column:metadata;type:json;serializer:json;null;comment:服务元数据"`
-	Cluster   string            `json:"cluster" gorm:"column:cluster;type:varchar(32);not null;comment:运行集群"`
+	Cluster   string            `json:"cluster" gorm:"column:cluster;type:varchar(32);not null;uniqueIndex:uk_name_cluster;comment:运行集群"`
 	Namespace string            `json:"namespace" gorm:"column:namespace;type:varchar(32);not null;comment:运行时命名空间"`
 
 	orm.DBModel
