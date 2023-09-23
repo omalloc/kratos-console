@@ -53,6 +53,8 @@ message ServiceGroup {
 	repeated Service children = 7;
 	// 命名空间
 	string namespace = 8;
+	// 数据类型
+	bool is_group = 9;
 }
 
 message OnlineServiceRequest {

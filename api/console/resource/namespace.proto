@@ -48,6 +48,7 @@ message NamespaceInfo {
 	string description = 4;
 	string created_at = 5;
 	string updated_at = 6;
+	int32 running = 7;
 }
 
 message NamespaceListRequest {

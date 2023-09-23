@@ -25,8 +25,13 @@ func (Namespace) TableName() string {
 	return "namespaces"
 }
 
+type NamespaceJoinAppRuntime struct {
+	Namespace
+	Running int64 `json:"running" gorm:"column:running;type:int;comment:运行中的应用数量"`
+}
+
 type NamespaceRepo interface {
-	SelectList(context.Context, *protobuf.Pagination) ([]*Namespace, error)
+	SelectList(context.Context, *protobuf.Pagination, string) ([]*NamespaceJoinAppRuntime, error)
 	SelectSimpleAll(context.Context) ([]*Namespace, error)
 	SelectOne(context.Context, int) (*Namespace, error)
 	SelectByName(context.Context, string) (*Namespace, error)
@@ -48,8 +53,8 @@ func NewNamespaceUsecase(logger log.Logger, repo NamespaceRepo) *NamespaceUsecas
 	}
 }
 
-func (r *NamespaceUsecase) List(ctx context.Context, pagination *protobuf.Pagination) ([]*Namespace, error) {
-	return r.repo.SelectList(ctx, pagination)
+func (r *NamespaceUsecase) List(ctx context.Context, pagination *protobuf.Pagination, name string) ([]*NamespaceJoinAppRuntime, error) {
+	return r.repo.SelectList(ctx, pagination, name)
 }
 
 func (r *NamespaceUsecase) SimpleList(ctx context.Context) ([]*Namespace, error) {

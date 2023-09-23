@@ -28,19 +28,20 @@ func NewNamespaceService(logger log.Logger, usecase *biz.NamespaceUsecase) *Name
 
 func (s *NamespaceService) List(ctx context.Context, req *pb.NamespaceListRequest) (*pb.NamespaceListReply, error) {
 	wrap := protobuf.PageWrap(req.Pagination)
-	ret, err := s.usecase.List(ctx, wrap)
+	ret, err := s.usecase.List(ctx, wrap, req.Name)
 	if err != nil {
 		return nil, err
 	}
 
 	return &pb.NamespaceListReply{
 		Pagination: wrap.Resp(),
-		Data: lo.Map(ret, func(item *biz.Namespace, _ int) *pb.NamespaceInfo {
+		Data: lo.Map(ret, func(item *biz.NamespaceJoinAppRuntime, _ int) *pb.NamespaceInfo {
 			return &pb.NamespaceInfo{
 				Id:          item.ID,
 				Name:        item.Name,
 				Alias:       item.Alias,
 				Description: item.Description,
+				Running:     int32(item.Running),
 				CreatedAt:   item.CreatedAt.Format(time.DateTime),
 				UpdatedAt:   item.UpdatedAt.Format(time.DateTime),
 			}

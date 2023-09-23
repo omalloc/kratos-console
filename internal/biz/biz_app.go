@@ -42,8 +42,13 @@ type NamespaceApp struct {
 	NamespaceAlias string `json:"namespace_alias" gorm:"column:namespace_alias;type:varchar(32);comment:命名空间别称"`
 }
 
+type AppQuery struct {
+	Name        string
+	NamespaceID int64
+}
+
 type AppRepo interface {
-	List(ctx context.Context, pagination *protobuf.Pagination) ([]*App, error)
+	List(ctx context.Context, pagination *protobuf.Pagination, query *AppQuery) ([]*App, error)
 	SelectByNamespace(context.Context, string) ([]*NamespaceApp, error)
 	Create(ctx context.Context, app *App) error
 	Update(ctx context.Context, app *App) error
@@ -62,8 +67,8 @@ func NewAppUsecase(logger log.Logger, repo AppRepo) *AppUsecase {
 	}
 }
 
-func (uc *AppUsecase) GetAppList(ctx context.Context, pagination *protobuf.Pagination) ([]*App, error) {
-	return uc.repo.List(ctx, pagination)
+func (uc *AppUsecase) GetAppList(ctx context.Context, pagination *protobuf.Pagination, name string, nsID int64) ([]*App, error) {
+	return uc.repo.List(ctx, pagination, &AppQuery{name, nsID})
 }
 
 func (uc *AppUsecase) GetSimpleList(ctx context.Context, namespace string) ([]*NamespaceApp, error) {

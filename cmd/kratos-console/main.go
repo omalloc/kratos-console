@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2/encoding/json"
+	"github.com/omalloc/kratos-console/internal/server"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -50,7 +51,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 }
 
-func newApp(logger log.Logger, registrar registry.Registrar, gs *grpc.Server, hs *http.Server, hh *health.Server) *kratos.App {
+func newApp(logger log.Logger, registrar registry.Registrar, gs *grpc.Server, hs *http.Server, ts *server.TaskServer, hh *health.Server) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -63,6 +64,7 @@ func newApp(logger log.Logger, registrar registry.Registrar, gs *grpc.Server, hs
 		kratos.Server(
 			gs,
 			hs,
+			ts,
 			hh,
 		),
 	)

@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"github.com/google/wire"
 	"github.com/omalloc/contrib/kratos/health"
 	"github.com/omalloc/contrib/kratos/registry"
@@ -15,6 +16,7 @@ import (
 var ProviderSet = wire.NewSet(
 	NewGRPCServer,
 	NewHTTPServer,
+	NewTaskServer,
 	NewRegistryConfig,
 	NewChecker,
 
@@ -43,6 +45,12 @@ type Etcd struct {
 }
 
 func (r *Etcd) Check(ctx context.Context) error {
-	_, err := r.MemberList(ctx)
-	return err
+	members, err := r.MemberList(ctx)
+	if err != nil {
+		return err
+	}
+	if len(members.Members) <= 0 {
+		return errors.New("etcd member list is empty")
+	}
+	return nil
 }

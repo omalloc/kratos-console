@@ -99,7 +99,12 @@ message AppInfo {
 }
 
 message AppListRequest {
+  // 分页参数
   protobuf.Pagination pagination = 1;
+  // 命名空间ID
+  int64 namespace_id = 2;
+  // 应用名称
+  string name = 3;
 }
 
 message AppListReply {

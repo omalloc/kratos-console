@@ -40,6 +40,17 @@ paths:
                   schema:
                     type: integer
                     format: int64
+                - name: namespace_id
+                  in: query
+                  description: 命名空间ID
+                  schema:
+                    type: integer
+                    format: int64
+                - name: name
+                  in: query
+                  description: 应用名称
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -650,6 +661,9 @@ components:
                 namespace:
                     type: string
                     description: 命名空间
+                is_group:
+                    type: boolean
+                    description: 数据类型
         api.console.resource.Agent:
             type: object
             properties:
@@ -905,6 +919,9 @@ components:
                     type: string
                 updated_at:
                     type: string
+                running:
+                    type: integer
+                    format: int32
         api.console.resource.NamespaceListReply:
             type: object
             properties:

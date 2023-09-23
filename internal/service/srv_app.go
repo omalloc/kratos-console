@@ -29,7 +29,7 @@ func NewAppService(logger log.Logger, app *biz.AppUsecase) *AppService {
 
 func (s *AppService) List(ctx context.Context, req *pb.AppListRequest) (*pb.AppListReply, error) {
 	pagination := protobuf.PageWrap(req.Pagination)
-	apps, err := s.app.GetAppList(ctx, pagination)
+	apps, err := s.app.GetAppList(ctx, pagination, req.Name, req.NamespaceId)
 	if err != nil {
 		return nil, err
 	}

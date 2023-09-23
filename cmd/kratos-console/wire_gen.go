@@ -58,9 +58,10 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 	discoveryService := service.NewDiscoveryService(logger, agentClient, appRuntimeUsecase)
 	grpcServer := server.NewGRPCServer(confServer, logger, zoneService, nodeService, appService, namespaceService, discoveryService)
 	httpServer := server.NewHTTPServer(confServer, logger, zoneService, nodeService, appService, namespaceService, discoveryService)
+	taskServer := server.NewTaskServer(logger, agentClient, appRuntimeUsecase)
 	v := server.NewChecker(dataData, client)
 	healthServer := health.NewServer(v, logger, httpServer)
-	app := newApp(logger, registrar, grpcServer, httpServer, healthServer)
+	app := newApp(logger, registrar, grpcServer, httpServer, taskServer, healthServer)
 	return app, func() {
 		cleanup2()
 		cleanup()
