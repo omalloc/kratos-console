@@ -250,8 +250,6 @@ github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRW
 github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/omalloc/contrib v1.0.6-1 h1:ibZ8+dozx0MJwKUS9kwnb4b1QK4iNIwIFh0/4RkTvuY=
 github.com/omalloc/contrib v1.0.6-1/go.mod h1:isL8iD0Zl5KW4HS7d8dg2p4+o/FOirr6i8hLJxDyvVU=
-github.com/omalloc/kratos-agent v0.0.0-20230920050032-e2d370f423a1 h1:IQfdZCqrht31roGJOZKshzrguxBh51tVKBwbWZpTWow=
-github.com/omalloc/kratos-agent v0.0.0-20230920050032-e2d370f423a1/go.mod h1:HyNH9iAr58Liop13G4UvFjAjTr4cBCFeXAW8Y3KHX40=
 github.com/omalloc/kratos-agent v0.0.0-20230923075604-1beb183e4726 h1:SGq12IukEe504K0tKn8MiOwmRKWNnRdZxt4N1uYwtDs=
 github.com/omalloc/kratos-agent v0.0.0-20230923075604-1beb183e4726/go.mod h1:HyNH9iAr58Liop13G4UvFjAjTr4cBCFeXAW8Y3KHX40=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

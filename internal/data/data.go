@@ -2,12 +2,13 @@ package data
 
 import (
 	"context"
+	"time"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"github.com/omalloc/contrib/kratos/orm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"time"
 
 	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/omalloc/kratos-console/internal/conf"
@@ -58,6 +59,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 			&biz.Node{},
 			&biz.App{},
 			&biz.Namespace{},
+			&biz.AppRuntime{},
 		)
 
 	cleanup := func() {
