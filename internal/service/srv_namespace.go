@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"github.com/omalloc/contrib/protobuf"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/omalloc/contrib/protobuf"
 	"github.com/samber/lo"
 
 	pb "github.com/omalloc/kratos-console/api/console/resource"
@@ -71,7 +71,7 @@ func (s *NamespaceService) Get(ctx context.Context, req *pb.NamespaceGetRequest)
 func (s *NamespaceService) Create(ctx context.Context, req *pb.NamespaceCreateRequest) (*pb.NamespaceCreateReply, error) {
 	m := &biz.Namespace{
 		Name:        req.Name,
-		Alias:       req.Name,
+		Alias:       req.Alias,
 		Description: req.Description,
 	}
 	err := s.usecase.Create(ctx, m)
