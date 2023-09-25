@@ -97,7 +97,7 @@ func (s *AppService) Create(ctx context.Context, req *pb.AppCreateRequest) (*pb.
 func (s *AppService) toData(req *pb.AppInfo) *biz.App {
 	return &biz.App{
 		Name:        req.Name,
-		Alias:       req.Alias,
+		Alias:       lo.Ternary(req.Alias == "", req.Name, req.Alias),
 		Description: req.Description,
 		Type:        int(req.Type.Number()),
 		NamespaceID: req.NamespaceId,
