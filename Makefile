@@ -2,7 +2,7 @@ GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always --abbrev=8 | sed 's/[^a-zA-Z0-9]/-/g')
 GITHASH=$(shell git rev-parse HEAD)
-APPNAME=$(shell go list -m | awk -F/ '{print $$3}')
+APPNAME=$(shell go mod why ./... | head -n 1 | awk -F/ '{print $$3}')
 Built:=$(shell date +%s)
 
 ifeq ($(GOHOSTOS), windows)
@@ -87,11 +87,11 @@ run:
 .PHONY: build
 # build
 build:
-	mkdir -p bin/ && go build -ldflags=" \
-    -X main.Version=$(VERSION) \
-    -X main.GitHash=$(GITHASH) \
-    -X main.Name=$(APPNAME) \
-    -X main.Built=$(Built)" -o ./bin/ ./...
+	mkdir -p bin/ && gox -osarch="linux/amd64" -ldflags="-w -extldflags=-static \
+		-X main.Version=$(VERSION) \
+		-X main.GitHash=$(GITHASH) \
+		-X main.Name=$(APPNAME) \
+		-X main.Built=$(Built)" -output=bin/server ./...
 
 .PHONY: zip
 # zip bin file

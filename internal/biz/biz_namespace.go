@@ -15,7 +15,7 @@ var (
 
 type Namespace struct {
 	ID          int64  `json:"id" gorm:"primaryKey"`
-	Name        string `json:"name" gorm:"column:name;type:varchar(32);uniqueIndex:uk_namespace;comment:命名空间唯一名称"`
+	Name        string `json:"name" gorm:"column:name;type:varchar(32);comment:命名空间唯一名称"`
 	Alias       string `json:"alias" gorm:"column:alias;type:varchar(32);comment:命名空间别称"`
 	Description string `json:"description" gorm:"column:description;type:varchar(128);comment:命名空间描述"`
 

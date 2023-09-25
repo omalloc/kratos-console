@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/omalloc/contrib/protobuf"
@@ -71,8 +72,22 @@ func (r *namespaceRepo) SelectByName(ctx context.Context, s string) (*biz.Namesp
 }
 
 func (r *namespaceRepo) Create(ctx context.Context, namespace *biz.Namespace) error {
-	return r.data.db.WithContext(ctx).Model(&biz.Namespace{}).
-		Create(namespace).Error
+	return r.data.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var (
+			count int64
+			err   error
+		)
+		if err = tx.Model(&biz.Namespace{}).
+			Where("name = ?", namespace.Name).
+			Find(&count).Error; err != nil {
+			return err
+		}
+		if count > 0 {
+			return errors.New("duplicate namespace name")
+		}
+
+		return tx.Model(&biz.Namespace{}).Create(namespace).Error
+	})
 }
 
 func (r *namespaceRepo) Update(ctx context.Context, namespace *biz.Namespace) error {
