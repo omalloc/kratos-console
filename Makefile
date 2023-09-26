@@ -2,7 +2,7 @@ GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always --abbrev=8 | sed 's/[^a-zA-Z0-9]/-/g')
 GITHASH=$(shell git rev-parse HEAD)
-APPNAME=$(shell go mod why ./... | head -n 1 | awk -F/ '{print $$3}')
+APPNAME=$(shell go mod edit -print | head -n 1 | awk -F/ '{print $$3}')
 Built:=$(shell date +%s)
 
 ifeq ($(GOHOSTOS), windows)
