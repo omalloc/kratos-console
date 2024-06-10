@@ -42,6 +42,11 @@ service App {
 
 }
 
+enum MetadataType {
+  // 挂起状态
+  hang = 0;
+}
+
 message AppInfo {
   reserved 13,14,15;
 

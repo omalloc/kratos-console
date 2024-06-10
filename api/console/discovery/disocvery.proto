@@ -26,27 +26,35 @@ service Discovery {
 		option (google.api.http).get = "/api/console/kv/-/value";
 	};
 
+	rpc KVUpdateHang (KVUpdateHangRequest) returns (KVUpdateHangReply) {
+		option (google.api.http) = {
+			put: "/api/console/kv/{id}/hang"
+			body: "*"
+		};
+	};
+
 }
 
 message Service {
+	int64 id = 1;
 	// 唯一标识
-	string key = 1;
+	string key = 2;
 	// 主机名
-	string hostname = 2;
+	string hostname = 3;
 	// 服务名称
-	string name = 3;
+	string name = 4;
 	// 版本
-	string version = 4;
+	string version = 5;
 	// 服务地址
-	repeated string endpoints = 5;
+	repeated string endpoints = 6;
 	// 集群
-	string cluster = 6;
+	string cluster = 7;
 	// 挂起状态 true 为挂起
-	bool hang = 7;
+	bool hang = 8;
 	// 元信息
-	map<string, string> metadata = 8;
+	map<string, string> metadata = 9;
 	// 命名空间
-	string namespace = 9;
+	string namespace = 10;
 }
 
 message ServiceGroup {
@@ -75,6 +83,8 @@ message OnlineServiceRequest {
 	protobuf.Pagination pagination = 1;
 	// service name
 	string name = 2;
+	// service namespace
+	string namespace = 3;
 }
 message OnlineServiceReply {
 		protobuf.Pagination pagination = 1;
@@ -100,3 +110,10 @@ message KVGetValueRequest {
 message KVGetValueReply {
 	string value = 1;
 }
+
+message KVUpdateHangRequest {
+	int64 id = 1;
+	bool hang = 2;
+}
+
+message KVUpdateHangReply {}

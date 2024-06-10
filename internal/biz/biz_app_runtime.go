@@ -38,6 +38,7 @@ type AppRuntimeRepo interface {
 	SelectListByNamespace(ctx context.Context, ns string) ([]*AppRuntime, error)
 	SelectListByNameAndNamespace(ctx context.Context, name, ns string) (*AppPair, error)
 	BatchSave(ctx context.Context, updates []*AppRuntime) error
+	UpdateHang(ctx context.Context, ID int64, hang bool) (*AppRuntime, error)
 }
 
 type AppRuntimeUsecase struct {
@@ -71,4 +72,8 @@ func (uc *AppRuntimeUsecase) Updates(ctx context.Context, svc []*pb.Microservice
 
 func (uc *AppRuntimeUsecase) SelectAll(ctx context.Context, name, ns string) (*AppPair, error) {
 	return uc.repo.SelectListByNameAndNamespace(ctx, name, ns)
+}
+
+func (uc *AppRuntimeUsecase) UpdateHang(ctx context.Context, ID int64, hang bool) (*AppRuntime, error) {
+	return uc.repo.UpdateHang(ctx, ID, hang)
 }

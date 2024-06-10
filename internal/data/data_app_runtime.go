@@ -3,9 +3,13 @@ package data
 import (
 	"context"
 	"fmt"
+
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/omalloc/contrib/kratos/orm/crud"
-	"github.com/omalloc/kratos-console/internal/biz"
 	"gorm.io/gorm"
+
+	pb "github.com/omalloc/kratos-console/api/console/resource"
+	"github.com/omalloc/kratos-console/internal/biz"
 )
 
 type appRuntimeRepo struct {
@@ -80,6 +84,33 @@ func (r *appRuntimeRepo) BatchSave(ctx context.Context, data []*biz.AppRuntime) 
 	return r.data.db.WithContext(ctx).Model(&biz.AppRuntime{}).
 		Save(&data).
 		Error
+}
+
+func (r *appRuntimeRepo) UpdateHang(ctx context.Context, ID int64, hang bool) (*biz.AppRuntime, error) {
+	var err error
+	var app biz.AppRuntime
+
+	err = r.data.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&biz.AppRuntime{}).
+			Where("id = ?", ID).
+			Take(&app).Error; err != nil {
+			return err
+		}
+
+		if app.Name == "kratos-agent" {
+			return errors.BadRequest("system-component can't hang", "kratos-agent 是系统组件,不允许挂起")
+		}
+
+		if app.Metadata == nil {
+			app.Metadata = make(map[string]string, 1)
+		}
+		// 需要有 Metadata 常量
+		app.Metadata[pb.MetadataType_hang.String()] = fmt.Sprintf("%t", hang)
+
+		return tx.Model(&biz.AppRuntime{}).Where("id = ?", ID).Save(&app).Error
+	})
+
+	return &app, err
 }
 
 func NewAppRuntimeRepo(data *Data) biz.AppRuntimeRepo {

@@ -3,12 +3,14 @@ package service
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/omalloc/kratos-agent/api/agent"
+	"github.com/samber/lo"
+
 	pb "github.com/omalloc/kratos-console/api/console/discovery"
 	"github.com/omalloc/kratos-console/internal/biz"
-	"github.com/samber/lo"
-	"strings"
 )
 
 type DiscoveryService struct {
@@ -28,7 +30,7 @@ func NewDiscoveryService(logger log.Logger, client agent.AgentClient, appruntime
 }
 
 func (s *DiscoveryService) OnlineServices(ctx context.Context, req *pb.OnlineServiceRequest) (*pb.OnlineServiceReply, error) {
-	ret, err := s.appruntime.SelectAll(ctx, req.Name, "")
+	ret, err := s.appruntime.SelectAll(ctx, req.Name, req.Namespace)
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +52,7 @@ func (s *DiscoveryService) OnlineServices(ctx context.Context, req *pb.OnlineSer
 			IsGroup:   true,
 			Children: lo.Map(keyMap[item.Key], func(child *biz.AppRuntime, _ int) *pb.Service {
 				return &pb.Service{
+					Id:        child.ID,
 					Key:       child.Key,
 					Name:      child.Name,
 					Hostname:  child.Hostname,
@@ -173,4 +176,22 @@ func (s *DiscoveryService) KVGetValue(ctx context.Context, req *pb.KVGetValueReq
 	return &pb.KVGetValueReply{
 		Value: reply.Value,
 	}, nil
+}
+
+func (s *DiscoveryService) KVUpdateHang(ctx context.Context, req *pb.KVUpdateHangRequest) (*pb.KVUpdateHangReply, error) {
+	// 先更新运行时数据库
+	app, err := s.appruntime.UpdateHang(ctx, req.Id, req.Hang)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := s.client.UpdateHangState(ctx, &agent.UpdateHangStateRequest{
+		Key:     app.Key,
+		Cluster: app.Cluster,
+		Hang:    req.Hang,
+	}); err != nil {
+		return nil, err //errors.ServiceUnavailable("agent.UpdateHangState", "failed to update hang state")
+	}
+
+	return &pb.KVUpdateHangReply{}, nil
 }

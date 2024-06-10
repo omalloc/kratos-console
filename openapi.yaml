@@ -38,14 +38,12 @@ paths:
                 - name: pagination.raw_total
                   in: query
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
                 - name: namespace_id
                   in: query
                   description: 命名空间ID
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
                 - name: name
                   in: query
                   description: 应用名称
@@ -102,8 +100,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -120,8 +117,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -144,8 +140,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -177,11 +172,15 @@ paths:
                 - name: pagination.raw_total
                   in: query
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
                 - name: name
                   in: query
                   description: service name
+                  schema:
+                    type: string
+                - name: namespace
+                  in: query
+                  description: service namespace
                   schema:
                     type: string
             responses:
@@ -241,6 +240,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.console.discovery.KVListKeysReply'
+    /api/console/kv/{id}/hang:
+        put:
+            tags:
+                - Discovery
+            operationId: Discovery_KVUpdateHang
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.console.discovery.KVUpdateHangRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.console.discovery.KVUpdateHangReply'
     /api/console/namespace:
         get:
             tags:
@@ -265,8 +288,7 @@ paths:
                 - name: pagination.raw_total
                   in: query
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
                 - name: name
                   in: query
                   schema:
@@ -334,8 +356,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -358,8 +379,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -391,8 +411,7 @@ paths:
                 - name: pagination.raw_total
                   in: query
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -471,8 +490,7 @@ paths:
                 - name: pagination.raw_total
                   in: query
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
                 - name: env
                   in: query
                   description: 查询条件 env 环境变量
@@ -654,6 +672,16 @@ components:
                     type: array
                     items:
                         type: string
+        api.console.discovery.KVUpdateHangReply:
+            type: object
+            properties: {}
+        api.console.discovery.KVUpdateHangRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                hang:
+                    type: boolean
         api.console.discovery.OnlineServiceReply:
             type: object
             properties:
@@ -666,6 +694,8 @@ components:
         api.console.discovery.Service:
             type: object
             properties:
+                id:
+                    type: string
                 key:
                     type: string
                     description: 唯一标识
@@ -741,9 +771,8 @@ components:
                     description: 部署状态
                     format: enum
                 heartbeat_time:
-                    type: integer
+                    type: string
                     description: 上次心跳时间
-                    format: int64
                 version:
                     type: string
                     description: Agent版本
@@ -764,9 +793,8 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
+                    type: string
                     description: 唯一键
-                    format: int64
                 name:
                     type: string
                     description: 应用名称
@@ -789,9 +817,8 @@ components:
                     description: 应用类型
                     format: enum
                 namespace_id:
-                    type: integer
+                    type: string
                     description: 命名空间id
-                    format: int64
                 users:
                     type: array
                     items:
@@ -803,13 +830,11 @@ components:
                         type: string
                     description: 应用仓库
                 created_at:
-                    type: integer
+                    type: string
                     description: 创建时间
-                    format: int64
                 updated_at:
-                    type: integer
+                    type: string
                     description: 修改时间
-                    format: int64
         api.console.resource.AppInfo_AppPort:
             type: object
             properties:
@@ -843,8 +868,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: int64
+                    type: string
         api.console.resource.CreateNodeReply:
             type: object
             properties:
@@ -873,7 +897,9 @@ components:
             type: object
             properties:
                 data:
-                    $ref: '#/components/schemas/api.console.resource.ZoneInfo'
+                    allOf:
+                        - $ref: '#/components/schemas/api.console.resource.ZoneInfo'
+                    description: 可用区
         api.console.resource.CreateZoneRequest:
             type: object
             properties:
@@ -922,13 +948,14 @@ components:
             type: object
             properties:
                 data:
-                    $ref: '#/components/schemas/api.console.resource.ZoneInfo'
+                    allOf:
+                        - $ref: '#/components/schemas/api.console.resource.ZoneInfo'
+                    description: 可用区
         api.console.resource.NamespaceApp:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: int64
+                    type: string
                 name:
                     type: string
                 alias:
@@ -937,8 +964,7 @@ components:
                     type: integer
                     format: enum
                 namespace_id:
-                    type: integer
-                    format: int64
+                    type: string
                 namespace_name:
                     type: string
                 namespace_alias:
@@ -976,8 +1002,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: int64
+                    type: string
                 name:
                     type: string
                 alias:
@@ -1004,8 +1029,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: int64
+                    type: string
                 name:
                     type: string
                 alias:
@@ -1026,8 +1050,7 @@ components:
             type: object
             properties:
                 id:
-                    type: integer
-                    format: int64
+                    type: string
                 name:
                     type: string
                 alias:
@@ -1048,15 +1071,15 @@ components:
                     type: string
                     description: 节点IP
                 agent:
-                    $ref: '#/components/schemas/api.console.resource.Agent'
+                    allOf:
+                        - $ref: '#/components/schemas/api.console.resource.Agent'
+                    description: Agent状态
                 created_at:
-                    type: integer
+                    type: string
                     description: 节点创建时间
-                    format: int64
                 updated_at:
-                    type: integer
+                    type: string
                     description: 节点更新时间
-                    format: int64
                 zone_id:
                     type: integer
                     description: 可用区ID
@@ -1207,8 +1230,7 @@ components:
                     type: integer
                     format: int32
                 raw_total:
-                    type: integer
-                    format: int64
+                    type: string
             description: 通用的分页信息
     securitySchemes:
         ApiKeyAuth:

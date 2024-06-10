@@ -60,6 +60,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 			&biz.App{},
 			&biz.Namespace{},
 			&biz.AppRuntime{},
+			&biz.User{},
 		)
 
 	cleanup := func() {
