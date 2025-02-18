@@ -2,13 +2,15 @@ package server
 
 import (
 	"context"
+	"time"
+
+	"github.com/cenkalti/backoff/v5"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/omalloc/kratos-agent/api/agent"
 	"github.com/omalloc/kratos-console/internal/biz"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
-	"time"
 )
 
 type TaskServer struct {
@@ -43,11 +45,17 @@ func (s *TaskServer) Stop(ctx context.Context) error {
 }
 
 func (s *TaskServer) run() {
+	starting := backoff.NewExponentialBackOff()
+	starting.InitialInterval = time.Second
+	starting.RandomizationFactor = 1.5
 	ticker := time.NewTicker(time.Second * 10)
+
 	for {
 		select {
 		case <-ticker.C:
-			if err := s.flushed(); err != nil {
+			_, err := backoff.Retry(context.Background(), s.flushed, backoff.WithBackOff(starting))
+			if err != nil {
+				s.log.Infof("[TASK] fetch discovery services failed: %v", err)
 				continue
 			}
 		case <-s.ch:
@@ -56,21 +64,23 @@ func (s *TaskServer) run() {
 	}
 }
 
-func (s *TaskServer) flushed() error {
+func (s *TaskServer) flushed() ([]*agent.Microservice, error) {
 	ctx, span := s.tracer.Start(context.Background(), "/cron/sync.agent.discovery/Services", propagation.MapCarrier{})
 	defer func() {
 		s.tracer.End(ctx, span, nil, nil)
 	}()
+
 	ctx, cancel := context.WithTimeout(ctx, time.Second*2)
 	defer cancel()
 
 	reply, err := s.cli.ListService(ctx, &agent.ListServiceRequest{})
 	if err != nil {
-		return err
+		return nil, err
 	}
+
 	if err = s.usecase.Updates(ctx, reply.Data); err != nil {
 		s.log.Infof("[TASK] fetch discovery services failed: %v", err)
-		return err
+		return nil, err
 	}
-	return nil
+	return reply.Data, nil
 }

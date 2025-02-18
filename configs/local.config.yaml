@@ -1,0 +1,16 @@
+registry:
+  enabled: true
+  only_discovery: false
+  namespace: /microservices
+  endpoints:
+    - 172.29.0.10:2379
+tracing:
+  endpoint: http://172.29.0.20:14268/api/traces
+data:
+  database:
+    driver: sqlite
+    source: :memory:?cache=shared&mode=memory&charset=utf8mb4&parseTime=true&loc=Local
+  redis:
+    addr: 172.29.0.20:6379
+    read_timeout: 0.2s
+    write_timeout: 0.2s

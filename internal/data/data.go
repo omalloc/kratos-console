@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/glebarez/sqlite"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"github.com/omalloc/contrib/kratos/orm"
@@ -28,6 +29,13 @@ var (
 	emptyCallback = func() {}
 )
 
+type DriverDialector func(dsn string) gorm.Dialector
+
+var driverSupported = map[string]DriverDialector{
+	"sqlite": sqlite.Open,
+	"mysql":  mysql.Open,
+}
+
 // Data .
 type Data struct {
 	// TODO wrapped database client
@@ -36,9 +44,13 @@ type Data struct {
 
 // NewData .
 func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+	driver, ok := driverSupported[c.Database.Driver]
+	if !ok {
+		driver = sqlite.Open
+	}
 
 	db, err := orm.New(
-		orm.WithDriver(mysql.Open(c.Database.Source)),
+		orm.WithDriver(driver(c.Database.Source)),
 		orm.WithTracingOpts(orm.WithDatabaseName("kratos_cp")),
 		orm.WithLogger(
 			orm.WithDebug(),
