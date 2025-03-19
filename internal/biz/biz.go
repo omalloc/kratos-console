@@ -9,4 +9,8 @@ var ProviderSet = wire.NewSet(
 	NewAppUsecase,
 	NewNamespaceUsecase,
 	NewAppRuntimeUsecase,
+	// rbac modules.
+	NewUserUsecase,
+	NewRoleUsecase,
+	NewPermissionUsecase,
 )

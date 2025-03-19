@@ -55,6 +55,8 @@ message Service {
 	map<string, string> metadata = 9;
 	// 命名空间
 	string namespace = 10;
+	// 上次心跳间隔
+	int32 last_healthy_sec = 11;
 }
 
 message ServiceGroup {
@@ -112,7 +114,9 @@ message KVGetValueReply {
 }
 
 message KVUpdateHangRequest {
+	// 主键
 	int64 id = 1;
+	// 挂起状态 true 为挂起1111
 	bool hang = 2;
 }
 

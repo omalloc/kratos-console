@@ -10,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/omalloc/contrib/kratos/health"
+	"github.com/omalloc/contrib/kratos/orm"
 	"github.com/omalloc/contrib/kratos/registry"
 	"github.com/omalloc/kratos-console/internal/biz"
 	"github.com/omalloc/kratos-console/internal/conf"
@@ -46,6 +47,16 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 	namespaceRepo := data.NewNamespaceRepo(logger, dataData)
 	namespaceUsecase := biz.NewNamespaceUsecase(logger, namespaceRepo)
 	namespaceService := service.NewNamespaceService(logger, namespaceUsecase)
+	transaction := orm.NewTransactionManager(dataData)
+	userRepo := data.NewUserRepo(transaction)
+	userUsecase := biz.NewUserUsecase(userRepo, transaction, logger)
+	userService := service.NewUserService(userUsecase, logger)
+	roleRepo := data.NewRoleRepo(transaction)
+	roleUsecase := biz.NewRoleUsecase(roleRepo, transaction, logger)
+	roleService := service.NewRoleService(roleUsecase)
+	permissionRepo := data.NewPermissionRepo(transaction)
+	permissionUsecase := biz.NewPermissionUsecase(transaction, permissionRepo)
+	permissionService := service.NewPermissionService(permissionUsecase)
 	registryDiscovery := registry.NewDiscovery(client, protobufRegistry)
 	agentClient, err := discovery.NewAgentService(logger, registryDiscovery)
 	if err != nil {
@@ -56,8 +67,8 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 	appRuntimeRepo := data.NewAppRuntimeRepo(dataData)
 	appRuntimeUsecase := biz.NewAppRuntimeUsecase(logger, appRuntimeRepo)
 	discoveryService := service.NewDiscoveryService(logger, agentClient, appRuntimeUsecase)
-	grpcServer := server.NewGRPCServer(confServer, logger, zoneService, nodeService, appService, namespaceService, discoveryService)
-	httpServer := server.NewHTTPServer(confServer, logger, zoneService, nodeService, appService, namespaceService, discoveryService)
+	grpcServer := server.NewGRPCServer(confServer, logger, zoneService, nodeService, appService, namespaceService, userService, roleService, permissionService, discoveryService)
+	httpServer := server.NewHTTPServer(confServer, logger, zoneService, nodeService, appService, namespaceService, userService, roleService, permissionService, discoveryService)
 	taskServer := server.NewTaskServer(logger, agentClient, appRuntimeUsecase)
 	v := server.NewChecker(dataData, client)
 	healthServer := health.NewServer(v, logger, httpServer)

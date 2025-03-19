@@ -87,7 +87,7 @@ run:
 .PHONY: build
 # build
 build:
-	mkdir -p bin/ && gox -osarch="linux/arm64" -ldflags="-w -extldflags=-static \
+	mkdir -p bin/ && gox -osarch="linux/amd64" -ldflags="-w -extldflags=-static \
 		-X main.Version=$(VERSION) \
 		-X main.GitHash=$(GITHASH) \
 		-X main.Name=$(APPNAME) \

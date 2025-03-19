@@ -2,13 +2,15 @@ package data_test
 
 import (
 	"context"
+	"testing"
+	"time"
+
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
+
 	"github.com/omalloc/kratos-console/internal/conf"
 	"github.com/omalloc/kratos-console/internal/data"
-	"testing"
-	"time"
 )
 
 func loadConfig() *conf.Bootstrap {

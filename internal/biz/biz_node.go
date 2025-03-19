@@ -3,11 +3,11 @@ package biz
 import (
 	"context"
 	"errors"
-	"github.com/omalloc/contrib/protobuf"
 
 	"github.com/go-kratos/kratos/v2/log"
-
 	"github.com/omalloc/contrib/kratos/orm"
+	"github.com/omalloc/contrib/protobuf"
+
 	pb "github.com/omalloc/kratos-console/api/console/resource"
 )
 
@@ -18,6 +18,7 @@ var (
 type Node struct {
 	ID         int    `json:"id" gorm:"column:id;primaryKey"`
 	Name       string `json:"name" gorm:"column:name;type:varchar(64);"`
+	Hostname   string `json:"hostname" gorm:"column:hostname;type:varchar(64);"`
 	IP         string `json:"ip" gorm:"column:ip;type:varchar(64);"`
 	ZoneID     int    `json:"zone_id" gorm:"column:zone_id;type:bigint(20);"`
 	Env        string `json:"env" gorm:"column:env;type:varchar(12);"`

@@ -59,7 +59,18 @@ func (r *appRuntimeRepo) SelectListByNameAndNamespace(ctx context.Context, name,
 			return err
 		}
 
-		return tx.Model(&biz.AppRuntime{}).Scopes(r.filters(name, ns)).Find(&childrenList).Error
+		return tx.Model(&biz.AppRuntime{}).Select([]string{
+			"id",
+			"key",
+			"hostname",
+			"name",
+			"namespace",
+			"metadata",
+			"endpoints",
+			"version",
+			"cluster",
+			"TIMESTAMPDIFF(SECOND, updated_at, NOW()) AS `last_healthy_sec`",
+		}).Scopes(r.filters(name, ns)).Find(&childrenList).Error
 	})
 
 	return &biz.AppPair{

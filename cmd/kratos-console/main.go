@@ -14,7 +14,6 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/omalloc/contrib/kratos/health"
 	trace "github.com/omalloc/contrib/kratos/tracing"
-	"github.com/omalloc/contrib/kratos/zap"
 	"go.uber.org/automaxprocs/maxprocs"
 
 	"github.com/omalloc/kratos-console/internal/conf"
@@ -44,6 +43,7 @@ func init() {
 	_, _ = maxprocs.Set(maxprocs.Logger(nil))
 
 	json.MarshalOptions.UseProtoNames = true
+	json.MarshalOptions.UseEnumNumbers = true
 
 	rootCmd.PersistentFlags().StringVar(&flagconf, "conf", "../../configs", "config path")
 	rootCmd.PersistentFlags().BoolVarP(&flagverbose, "verbose", "v", false, "verbose output")
@@ -75,8 +75,9 @@ func main() {
 		panic(err)
 	}
 
-	logger := log.With(zap.NewLogger(zap.Verbose(flagverbose)),
+	logger := log.With(log.NewFilter(log.DefaultLogger, log.FilterLevel(log.LevelDebug)),
 		"ts", log.DefaultTimestamp,
+		"caller", log.DefaultCaller,
 		"service.id", id,
 		"service.name", Name,
 		"service.version", Version,
@@ -95,6 +96,12 @@ func main() {
 	if err := c.Load(); err != nil {
 		panic(err)
 	}
+
+	_ = c.Watch("logger.level", func(s string, value config.Value) {
+		lvl := log.ParseLevel(value.Load().(string))
+		log.Infof("log level has changed %v", lvl)
+		//l := log.With(log.NewFilter(logger, log.FilterLevel(lvl)))
+	})
 
 	var bc conf.Bootstrap
 	if err := c.Scan(&bc); err != nil {

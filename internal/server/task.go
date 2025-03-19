@@ -8,9 +8,10 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/omalloc/kratos-agent/api/agent"
-	"github.com/omalloc/kratos-console/internal/biz"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/omalloc/kratos-console/internal/biz"
 )
 
 type TaskServer struct {
@@ -34,7 +35,7 @@ func NewTaskServer(logger log.Logger, cli agent.AgentClient, usecase *biz.AppRun
 
 func (s *TaskServer) Start(ctx context.Context) error {
 	s.log.WithContext(ctx).Infof("[TASK] server starting")
-	go s.run()
+	// go s.run()
 
 	return nil
 }

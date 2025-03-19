@@ -10,4 +10,8 @@ var ProviderSet = wire.NewSet(
 	NewAppService,
 	NewDiscoveryService,
 	NewNamespaceService,
+	// User, Role, Permissions,
+	NewUserService,
+	NewRoleService,
+	NewPermissionService,
 )

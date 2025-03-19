@@ -12,6 +12,7 @@ message Bootstrap {
   Data data = 2;
   protobuf.Tracing tracing = 3;
   protobuf.Registry registry = 4;
+  Logger logger = 5;
 }
 
 message Server {
@@ -42,4 +43,8 @@ message Data {
   }
   Database database = 1;
   Redis redis = 2;
+}
+
+message Logger {
+  string level = 1;
 }

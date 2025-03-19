@@ -18,11 +18,18 @@ import (
 // ProviderSet is data providers.
 var ProviderSet = wire.NewSet(
 	NewData,
+	wire.Bind(new(orm.DataSourceManager), new(*Data)),
+	orm.NewTransactionManager,
+
 	NewZoneRepo,
 	NewNodeRepo,
 	NewAppRepo,
 	NewNamespaceRepo,
 	NewAppRuntimeRepo,
+	// rbac modules.
+	NewUserRepo,
+	NewRoleRepo,
+	NewPermissionRepo,
 )
 
 var (
@@ -38,8 +45,9 @@ var driverSupported = map[string]DriverDialector{
 
 // Data .
 type Data struct {
-	// TODO wrapped database client
 	db *gorm.DB
+	// wrapped database client with transaction manager
+	txm orm.Transaction
 }
 
 // NewData .
@@ -73,15 +81,22 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 			&biz.Namespace{},
 			&biz.AppRuntime{},
 			&biz.User{},
+			&biz.Role{},
+			&biz.Permission{},
+			&biz.RolePermission{},
+			&biz.UserNamespace{},
+			&biz.UserRole{},
 		)
 
 	cleanup := func() {
 		log.Info("closing the data resources")
 	}
 
-	return &Data{
+	data := &Data{
 		db: db,
-	}, cleanup, nil
+	}
+
+	return data, cleanup, nil
 }
 
 func (d *Data) Check(ctx context.Context) error {
@@ -92,4 +107,8 @@ func (d *Data) Check(ctx context.Context) error {
 		return c.PingContext(ctx)
 	}
 	return nil
+}
+
+func (d *Data) GetDataSource() *gorm.DB {
+	return d.db
 }

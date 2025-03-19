@@ -51,17 +51,22 @@ func (s *DiscoveryService) OnlineServices(ctx context.Context, req *pb.OnlineSer
 			Endpoints: nil,
 			IsGroup:   true,
 			Children: lo.Map(keyMap[item.Key], func(child *biz.AppRuntime, _ int) *pb.Service {
+				hang := child.Metadata["hang"] == "true"
+				if child.LastHealthySec > 60 {
+					hang = true
+				}
 				return &pb.Service{
-					Id:        child.ID,
-					Key:       child.Key,
-					Name:      child.Name,
-					Hostname:  child.Hostname,
-					Version:   child.Version,
-					Endpoints: child.Endpoints,
-					Cluster:   child.Cluster,
-					Hang:      child.Metadata["hang"] == "true",
-					Metadata:  child.Metadata,
-					Namespace: child.Namespace,
+					Id:             child.ID,
+					Key:            child.Key,
+					Name:           child.Name,
+					Hostname:       child.Hostname,
+					Version:        child.Version,
+					Endpoints:      child.Endpoints,
+					Cluster:        child.Cluster,
+					Hang:           hang,
+					Metadata:       child.Metadata,
+					Namespace:      child.Namespace,
+					LastHealthySec: child.LastHealthySec,
 				}
 			}),
 		}

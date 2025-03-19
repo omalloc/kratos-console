@@ -8,6 +8,8 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/go-kratos/swagger-api/openapiv2"
+
+	adminpb "github.com/omalloc/kratos-console/api/console/administration"
 	discoverypb "github.com/omalloc/kratos-console/api/console/discovery"
 	resourcepb "github.com/omalloc/kratos-console/api/console/resource"
 	"github.com/omalloc/kratos-console/internal/conf"
@@ -21,6 +23,11 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	node *service.NodeService,
 	app *service.AppService,
 	namespace *service.NamespaceService,
+
+	// admin
+	user *service.UserService,
+	role *service.RoleService,
+	permission *service.PermissionService,
 	// discovery
 	discovery *service.DiscoveryService,
 ) *http.Server {
@@ -49,5 +56,9 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	resourcepb.RegisterAppHTTPServer(srv, app)
 	resourcepb.RegisterNamespaceHTTPServer(srv, namespace)
 	discoverypb.RegisterDiscoveryHTTPServer(srv, discovery)
+
+	adminpb.RegisterUserHTTPServer(srv, user)
+	adminpb.RegisterRoleHTTPServer(srv, role)
+	adminpb.RegisterPermissionHTTPServer(srv, permission)
 	return srv
 }
